@@ -43,11 +43,6 @@ export interface OptionResponse {
   max_value: number
 }
 
-// export interface OptionWitDescriptionResponse {
-//   options: OptionResponse[],
-//   last_description: string,
-// }
-
 export interface DivaResponse {
   id: number
   name: string
