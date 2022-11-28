@@ -2,69 +2,59 @@
   import { Ref } from 'vue'
 
   interface Save {
-    slot: number
-    text: string
-    path: string | null
-    params: string
+    s: number
+    t: string
+    j: string | null
+    p: string
   }
-  const saves = useCookie<Save[]>('skillSaves')
+  const saves = useCookie<Save[]>('skillSave')
   saves.value = saves.value || [
-    { slot: 1, text: '1: No save', path: null, params: '' },
-    { slot: 2, text: '2: No save', path: null, params: '' },
-    { slot: 3, text: '3: No save', path: null, params: '' },
-    { slot: 4, text: '4: No save', path: null, params: '' },
-    { slot: 5, text: '5: No save', path: null, params: '' },
-    { slot: 6, text: '6: No save', path: null, params: '' },
-    { slot: 7, text: '7: No save', path: null, params: '' },
-    { slot: 8, text: '8: No save', path: null, params: '' },
-    { slot: 9, text: '9: No save', path: null, params: '' },
-    { slot: 10, text: '10: No save', path: null, params: '' },
-    { slot: 11, text: '11: No save', path: null, params: '' },
-    { slot: 12, text: '12: No save', path: null, params: '' },
-    { slot: 13, text: '13: No save', path: null, params: '' },
-    { slot: 14, text: '14: No save', path: null, params: '' },
-    { slot: 15, text: '15: No save', path: null, params: '' },
-    { slot: 16, text: '16: No save', path: null, params: '' },
-    { slot: 17, text: '17: No save', path: null, params: '' },
-    { slot: 18, text: '18: No save', path: null, params: '' },
-    { slot: 19, text: '19: No save', path: null, params: '' },
-    { slot: 20, text: '20: No save', path: null, params: '' },
-    { slot: 21, text: '21: No save', path: null, params: '' },
-    { slot: 22, text: '22: No save', path: null, params: '' },
-    { slot: 23, text: '23: No save', path: null, params: '' },
-    { slot: 24, text: '24: No save', path: null, params: '' },
-    { slot: 25, text: '25: No save', path: null, params: '' },
-    { slot: 26, text: '26: No save', path: null, params: '' },
-    { slot: 27, text: '27: No save', path: null, params: '' },
-    { slot: 28, text: '28: No save', path: null, params: '' },
-    { slot: 29, text: '29: No save', path: null, params: '' },
-    { slot: 30, text: '30: No save', path: null, params: '' },
+    { s: 1, t: '1: No save', j: null, p: '' },
+    { s: 2, t: '2: No save', j: null, p: '' },
+    { s: 3, t: '3: No save', j: null, p: '' },
+    { s: 4, t: '4: No save', j: null, p: '' },
+    { s: 5, t: '5: No save', j: null, p: '' },
+    { s: 6, t: '6: No save', j: null, p: '' },
+    { s: 7, t: '7: No save', j: null, p: '' },
+    { s: 8, t: '8: No save', j: null, p: '' },
+    { s: 9, t: '9: No save', j: null, p: '' },
+    { s: 10, t: '10: No save', j: null, p: '' },
+    { s: 11, t: '11: No save', j: null, p: '' },
+    { s: 12, t: '12: No save', j: null, p: '' },
+    { s: 13, t: '13: No save', j: null, p: '' },
+    { s: 14, t: '14: No save', j: null, p: '' },
+    { s: 15, t: '15: No save', j: null, p: '' },
+    { s: 16, t: '16: No save', j: null, p: '' },
+    { s: 17, t: '17: No save', j: null, p: '' },
+    { s: 18, t: '18: No save', j: null, p: '' },
+    { s: 19, t: '19: No save', j: null, p: '' },
+    { s: 20, t: '20: No save', j: null, p: '' },
   ]
   const selectedSave: Ref<Save> = ref<Save>(saves.value[0])
   const memo = ref('')
   const route = useRoute()
   function saveSkill() {
-    if (saves.value?.[selectedSave.value.slot - 1]) {
+    if (saves.value?.[selectedSave.value.s - 1]) {
       const newSave: Save = {
-        slot: selectedSave.value.slot,
-        text: memo.value || '名称未設定',
-        path: route.path,
-        params: getParams(),
+        s: selectedSave.value.s,
+        t: memo.value || '名称未設定',
+        j: route.path,
+        p: getParams(),
       }
       saves.value = saves.value.map((save, index) => {
-        return index === selectedSave.value.slot - 1 ? newSave : save
+        return index === selectedSave.value.s - 1 ? newSave : save
       })
       selectedSave.value = newSave
     }
   }
   function loadSkill() {
-    if (!selectedSave.value.path) {
+    if (!selectedSave.value.j) {
       return
     }
-    if (route.path === selectedSave.value.path) {
-      setParams(selectedSave.value.params)
+    if (route.path === selectedSave.value.j) {
+      setParams(selectedSave.value.p)
     } else {
-      navigateTo(selectedSave.value.path + '?s=' + selectedSave.value.params)
+      navigateTo(selectedSave.value.j + '?s=' + selectedSave.value.p)
     }
   }
 </script>

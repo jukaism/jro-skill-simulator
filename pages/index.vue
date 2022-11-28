@@ -15,20 +15,20 @@
       { name: 'dragonknight', displayName: 'Dragon Knight', dummy: false },
       { name: 'archmage', displayName: 'Arch Mage', dummy: false },
       { name: 'windhawk', displayName: 'Wind Hawk', dummy: false },
+      { name: 'cardinal', displayName: 'Cardinal', dummy: false },
     ],
     [
-      { name: 'cardinal', displayName: 'Cardinal', dummy: false },
       { name: 'meister', displayName: 'Meister', dummy: false },
       { name: 'shadowcross', displayName: 'Shadow Cross', dummy: false },
       { name: 'imperialguard', displayName: 'Imperial Guard', dummy: false },
-    ],
-    [],
-    [
       {
         name: 'elementalmaster',
         displayName: 'Elemental Master',
         dummy: false,
       },
+    ],
+    [],
+    [
       { name: 'troubadour', displayName: 'Troubadour', dummy: false },
       { name: 'trouvere', displayName: 'Trouvere', dummy: false },
       { name: 'inquisitor', displayName: 'Inquisitor', dummy: false },
