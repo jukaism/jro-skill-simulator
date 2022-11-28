@@ -68,7 +68,7 @@
 <template>
   <div class="d-flex flex-column align-center">
     <img
-      src="skill/top.png"
+      :src="`job/top.png`"
       width="1000"
       height="1000"
       style="position: relative"
