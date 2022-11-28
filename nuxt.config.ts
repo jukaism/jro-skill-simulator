@@ -5,4 +5,13 @@ export default defineNuxtConfig({
   build: {
     transpile: ['vuetify'],
   },
+  vite: {
+    css: {
+      preprocessorOptions: {
+        scss: {
+          additionalData: '@use "@/assets/_colors.scss" as *;',
+        },
+      },
+    },
+  },
 })

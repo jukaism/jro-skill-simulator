@@ -19,6 +19,8 @@ interface WordCandidate {
   candidates: SearchItem[]
 }
 
+export const useDisplayJobName = () =>
+  useState<string>('displayJobName', () => '')
 export const useTrees = () => useState<JobTree4[]>('trees', () => [])
 export const useSkillGroups = () =>
   useState<SkillGroup[]>('skillGroups', () => [])
@@ -45,6 +47,9 @@ export const useSearchItem = () =>
   })
 export const useItemsWithRequires = () =>
   useState<ItemWithRequires[]>('itemsWithRequires', () => [])
+export const useItemDetail = () =>
+  useState<ItemDescription | null>('itemDetail', () => null)
+export const useBaby = () => useState<boolean>('baby', () => false)
 
 const treesRef = useTrees()
 const skillRelationsRef = useSkillRelations()
@@ -55,6 +60,7 @@ const searchCandidatesRef = useSearchCandidates()
 const storedCandidatesRef = useStoredCandidates()
 const itemsWithRequiresRef = useItemsWithRequires()
 const relationsRef = useSkillRelations()
+const babyRef = useBaby()
 
 export const fetchJob = async ({
   jobCodes,
@@ -185,6 +191,9 @@ export const getParams = (): string => {
     .forEach((sk: Skill) => {
       skills += String.fromCharCode(sk.lv * 2 + 97)
     })
+  if (babyRef.value) {
+    skills += '&t=none'
+  }
   return skills
 }
 export const setParams = (params: string) => {
@@ -321,7 +330,8 @@ export const addSearchCandidates = ({
 
 export const addItemDetail = (itemWithRequires: ItemWithRequires) => {
   const target = itemsWithRequiresRef.value.find(
-    (item: ItemWithRequires) => item.searchItem === itemWithRequires.searchItem,
+    (item: ItemWithRequires) =>
+      item.searchItem.itemId === itemWithRequires.searchItem.itemId,
   )
   if (!target) {
     itemsWithRequiresRef.value.splice(0, 0, itemWithRequires)
@@ -330,7 +340,8 @@ export const addItemDetail = (itemWithRequires: ItemWithRequires) => {
 
 export const removeItemDetail = (itemWithRequires: ItemWithRequires) => {
   const target = itemsWithRequiresRef.value.find(
-    (item: ItemWithRequires) => item.searchItem === itemWithRequires.searchItem,
+    (item: ItemWithRequires) =>
+      item.searchItem.itemId === itemWithRequires.searchItem.itemId,
   )
   if (target) {
     const index = itemsWithRequiresRef.value.indexOf(target)
@@ -342,7 +353,8 @@ export const removeItemDetail = (itemWithRequires: ItemWithRequires) => {
 
 export const updateItemDetail = (itemWithRequires: ItemWithRequires) => {
   const target = itemsWithRequiresRef.value.find(
-    (item: ItemWithRequires) => item.searchItem === itemWithRequires.searchItem,
+    (item: ItemWithRequires) =>
+      item.searchItem.itemId === itemWithRequires.searchItem.itemId,
   )
   if (target) {
     const index = itemsWithRequiresRef.value.indexOf(target)
@@ -383,7 +395,7 @@ export const fetchCandidatesRecursion = async ({
   }
   const { data: res } = await useFetch<ItemIdAndName[]>(
     'https://yapparo.net/api/v1/candidates/equip',
-    { query: { item_name: itemName } },
+    { query: { item_name: itemName }, method: 'POST' },
   )
 
   if (res.value && res.value.length > 0) {
@@ -429,8 +441,7 @@ export const fetchItemDetail = async ({
   const { data: res } = await useFetch<DescriptionResponse>(
     'https://yapparo.net/api/v1/item_descriptions/' + searchItem.itemId,
   )
-
-  const descString = res.value?.data.desc
+  const descString = res.value?.desc
   if (typeof descString === 'string') {
     const itemDescription: ItemDescription = {
       itemId: searchItem.itemId,

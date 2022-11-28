@@ -31,14 +31,22 @@
     "vue-eslint-parser": "^9.1.0"
   },
   "dependencies": {
+    "@mdi/font": "^7.0.96",
     "mdi": "^2.2.43",
     "nuxt-graphql-client": "^0.2.16",
     "vite-plugin-vuetify": "^1.0.0",
     "vuetify": "^3.0.2"
   },
   "lint-staged": {
-    "**/*.{js,ts}": ["eslint"],
-    "**/*.{css,scss}": ["stylelint"],
-    "**/*.vue": ["eslint", "stylelint"]
+    "**/*.{js,ts}": [
+      "eslint"
+    ],
+    "**/*.{css,scss}": [
+      "stylelint"
+    ],
+    "**/*.vue": [
+      "eslint",
+      "stylelint"
+    ]
   }
 }

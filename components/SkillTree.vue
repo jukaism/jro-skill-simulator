@@ -106,7 +106,7 @@
   }
 
   interface JobDetail {
-    code: JobCode
+    codes: JobCode[]
     name: string
     lv: number
   }
@@ -123,7 +123,7 @@
   })
   const route = useRoute()
   const itemsWithRequires = useItemsWithRequires()
-  const baby: Ref<boolean> = ref(false)
+  const baby: Ref<boolean> = useBaby()
   const jobTypes: JobType[] = [
     { name: '1st', lv: 50 },
     { name: '2nd', lv: 70 },
@@ -209,12 +209,6 @@
     { code: 'JT_SUPERNOVICE2', name: 'Super Novice 2', type: '2nd' },
   ]
 
-  const headers = [
-    { text: 'アイテム名', value: 'itemName', width: 280 },
-    { text: '対象スキル数', value: 'targets' },
-  ]
-  const page: Ref<number> = ref(1)
-  const pageCount: Ref<number> = ref(0)
   const search: Ref<string> = ref('')
   const searchItem: Ref<SearchItem | null> = ref(null)
   const bgElement: Ref<HTMLElement | null> = ref(null)
@@ -226,18 +220,49 @@
   const maxx: Ref<number> = ref(1200)
   const maxy: Ref<number> = ref(700)
   const jobCodes = computed(
-    (): JobCode[] =>
+    (): JobCode[][] =>
       props.allJobCodes?.map((codes) => {
-        return (baby.value && codes[1]) || codes[0]
+        return (baby.value && codes[1] && [codes[1]]) || codes
       }) || [],
   )
   const jobDetails = computed((): JobDetail[] =>
-    jobCodes.value.map((code) => {
-      const job: JobInfo | undefined = jobs.find((job) => job.code === code)
+    jobCodes.value.map((codes) => {
+      const job: JobInfo | undefined = jobs.find((job) => job.code === codes[0])
       const name: string = job?.name || ''
       const lv: number = jobTypes.find((jt) => jt.name === job?.type)?.lv || 1
-      const jobDetail: JobDetail = { code, name, lv }
+      const jobDetail: JobDetail = { codes, name, lv }
       return jobDetail
+    }),
+  )
+  interface Job {
+    detail: JobDetail
+    currentLv: number
+    transfers: Transfer[]
+    skills: {
+      skill: Skill
+      irs: { ir: ItemWithRequires; htmls: string[] }[]
+    }[]
+  }
+  const jobMaps = computed((): Job[] =>
+    jobDetails.value.map((detail: JobDetail, index): Job => {
+      return {
+        detail,
+        currentLv: lvOfJob.value[index],
+        transfers: transfers.value.filter((tran) => tran.to === index),
+        skills: treeOfJob(detail.codes).map((skill) => {
+          return {
+            skill,
+            irs: badgeOfSkill(skill).map((ir) => {
+              return {
+                ir,
+                htmls: ir.requires.map((rq) =>
+                  arrangeSkillRequireDescription(ir.itemName, rq),
+                ),
+              }
+            }),
+          }
+        }),
+      }
     }),
   )
   const viewBox = computed((): string => `0 0 1200 ${maxy.value}`)
@@ -246,9 +271,26 @@
   const cachedSearchItems = useCookie<ItemIdAndName[]>(
     'searchItems' + jobCodes.value[jobCodes.value.length - 1],
   )
+  const mdQuery = window.matchMedia('(min-width: 640px)')
+  const lgQuery = window.matchMedia('(min-width: 850px)')
+  const isMd = ref(mdQuery.matches)
+  const isLg = ref(lgQuery.matches)
+  mdQuery.addEventListener('change', mediaTest)
+  lgQuery.addEventListener('change', mediaTest)
+  function mediaTest(e: MediaQueryListEvent) {
+    if (e.media.includes('640px')) {
+      isMd.value = e.matches
+    } else {
+      isLg.value = e.matches
+    }
+  }
+  watch(isMd, decorateRelation)
+  watch(isLg, decorateRelation)
+  watch(baby, decorateRelation)
   onMounted(() => {
+    itemsWithRequires.value = []
     fetchJob({
-      jobCodes: jobCodes.value,
+      jobCodes: jobCodes.value.flat(),
       params: route.params.s === 'string' ? route.params.s : '',
       callback: decorateRelation,
     })
@@ -435,27 +477,27 @@
       }
     }
   }
+  function setRequiredSkills(itemWithRequires: ItemWithRequires) {
+    itemWithRequires.requires.forEach((require: SkillRequire) => {
+      setSkillLv({
+        name: require.skillName,
+        level: require.lv,
+      })
+    })
+  }
+  const itemDetail = useItemDetail()
+  function openDetail(itemWithRequires: ItemWithRequires) {
+    itemDetail.value = itemWithRequires.itemDescription
+  }
+  function deleteItemWithRequires(itemWithRequires: ItemWithRequires) {
+    removeItemDetail(itemWithRequires)
+    saveItems()
+  }
   function saveItems() {
     cachedSearchItems.value = itemsWithRequires.value.map((ir) => {
       return { id: ir.searchItem.itemId, name: ir.searchItem.itemName }
     })
   }
-  // function setRequiredSkills(itemWithRequires: ItemWithRequires) {
-  //   itemWithRequires.requires.forEach((require: SkillRequire) => {
-  //     setSkillLv({
-  //       name: require.skillName,
-  //       level: require.lv,
-  //     })
-  //   })
-  // }
-  // function openDetail(itemWithRequires: ItemWithRequires) {
-  //   console.warn(itemWithRequires)
-  //   // setItemDetail(itemWithRequires.itemDescription)
-  // }
-  // function deleteItemWithRequires(itemWithRequires: ItemWithRequires) {
-  //   removeItemDetail(itemWithRequires)
-  //   saveItems()
-  // }
   function arrangeSkillRequireDescription(
     itemName: string,
     require: SkillRequire,
@@ -492,24 +534,26 @@
   })
   function decorateRelation() {
     maxy.value = 700
-    bgElement.value = document.getElementById('background')
-    elements.value = []
-    skills.value.forEach((skill: Skill) => {
-      const element = document.getElementById(skill.code)
-      if (element) {
-        elements.value.push({
-          id: skill.code,
-          element,
-        })
-      }
+    nextTick(() => {
+      bgElement.value = document.getElementById('background')
+      elements.value = []
+      skills.value.forEach((skill: Skill) => {
+        const element = document.getElementById(skill.code)
+        if (element) {
+          elements.value.push({
+            id: skill.code,
+            element,
+          })
+        }
+      })
     })
   }
   const trees = useTrees()
-  function treeOfJob(jobCode: JobCode): Skill[] {
+  function treeOfJob(jobCodes: string[]): Skill[] {
     let jobSkills: Skill[] = []
     let treeSize = 0
     trees.value.forEach((tree: JobTree4) => {
-      if (jobCode === tree.jobCode) {
+      if (jobCodes.includes(tree.jobCode)) {
         treeSize = Math.max(treeSize, tree.treeSize)
         jobSkills = jobSkills.concat(
           skills.value.filter((skill: Skill) =>
@@ -539,7 +583,7 @@
   }
   const lvsOfJob = computed((): number[] => {
     let lvs: number[] = []
-    jobCodes.value.forEach((jobCodes: JobCode) => {
+    jobCodes.value.forEach((jobCodes: string[]) => {
       let lv = 1
       trees.value.forEach((tree: JobTree4) => {
         if (jobCodes.includes(tree.jobCode)) {
@@ -583,312 +627,344 @@
 </script>
 
 <template>
-  <v-layout>
-    <v-row style="position: relative; margin: 0 10px 0">
-      <svg
-        id="background"
-        :view-box.camel="viewBox"
-        :width="maxx"
-        :height="maxy"
-        style="position: absolute; top: 0; left: 0"
-      >
-        <path
-          v-for="(path, index) in relationPaths"
-          :key="'path' + index"
-          :d="path"
-          :stroke="relationColor(relations[index])"
-          fill="transparent"
-        />
-      </svg>
-      <v-flex>
-        <v-row>
-          <div
-            class="d-flex flex-no-wrap justify-start align-baseline"
-            style="width: 100%"
-          >
-            <v-autocomplete
-              v-model="searchItem"
-              v-model:search-input="search"
-              class="ma-1"
-              label="アイテム名"
-              :items="candidates"
-              item-text="itemName"
-              :no-filter="true"
-              return-object
-              style="max-width: 500px; padding-left: 20px"
-            ></v-autocomplete>
-            <v-btn
-              v-if="searchItem"
-              class="ma-1"
-              color="primary"
-              @click="addListToItem(searchItem)"
-            >
-              追加
-            </v-btn>
-            <v-spacer />
-            <skill-info v-if="pageCount > 0" :clickable="true"></skill-info>
-            <v-btn href="/skill" class="ml-2 mr-4" color="primary" small>
-              一覧に戻る
-            </v-btn>
-          </div>
-        </v-row>
-        <div
-          class="d-flex justify-between"
-          style="height: 200px; flex-direction: column"
+  <v-container>
+    <div class="d-flex flex-column align-center">
+      <div class="d-flex flex-row justify-space-between flex-wrap">
+        <v-autocomplete
+          v-model="searchItem"
+          v-model:search="search"
+          class="ma-1 autocomplete"
+          label="アイテム名"
+          :items="candidates"
+          item-title="itemName"
+          :no-filter="true"
+          return-object
+        ></v-autocomplete>
+        <v-btn
+          v-if="searchItem"
+          class="ma-1"
+          color="primary"
+          @click="addListToItem(searchItem)"
         >
-          <v-data-table
-            v-model:page="page"
-            class="elevation-1"
-            dense
-            :headers="headers"
-            :disable-sort="true"
-            :items="itemsWithRequires"
-            :items-per-page="3"
-            hide-default-footer
-            @page-count="pageCount = $event"
-          >
-            <!-- <template #item.itemName="{ item }">
-              {{ item.itemName }}
-            </template>
-            <template #item.targets="{ item }">
-              <div
-                class="d-flex flex-no-wrap justify-between align-center"
-                style="max-width: 800px"
-              >
-                <div>
-                  {{ item.targets }}
-                </div>
-                <div style="margin-left: auto">
-                  <v-btn
-                    v-if="item.requires.length > 0"
-                    class="ma-1"
-                    color="secondary"
-                    small
-                    @click="setRequiredSkills(item)"
-                  >
-                    スキル習得
-                  </v-btn>
-                  <v-btn
-                    class="ma-1"
-                    color="info"
-                    small
-                    v-on="null"
-                    @click="openDetail(item)"
-                  >
-                    詳細を見る
-                  </v-btn>
-                  <v-btn
-                    class="ma-1"
-                    color="error"
-                    small
-                    @click="deleteItemWithRequires(item)"
-                  >
-                    削除
-                  </v-btn>
-                </div>
-              </div>
-            </template> -->
-          </v-data-table>
-          <v-pagination
-            v-if="pageCount > 0"
-            v-model="page"
-            :length="pageCount"
-            style="position: relative; margin-top: auto"
-          ></v-pagination>
-          <div v-else class="text-center copy mt-2">
-            スキル要件のある装備を追加すると連携機能が使えます。<br />
-            <skill-info :clickable="true"></skill-info>
-          </div>
+          追加
+        </v-btn>
+        <div class="text-center copy mt-2 flex-grow-1">
+          スキル要件のある装備を追加すると連携機能が使えます。<br />
+          <skill-info></skill-info>
         </div>
-        <div class="d-flex flex-no-wrap align-center" style="margin-top: -30px">
-          <div><p style="margin: 1px 0 0 10px">転生</p></div>
-          <v-radio-group v-model="baby" class="ml-1" dense row>
-            <v-radio label="あり" color="secondary" :value="false"></v-radio>
-            <v-radio
-              label="なし（養子）"
-              color="secondary"
-              :value="true"
-            ></v-radio>
-          </v-radio-group>
-        </div>
-        <div class="d-flex flex-no-wrap justify-between align-center">
-          <v-btn
-            class="mr-4"
-            style="margin-left: auto"
-            color="error"
-            small
-            @click="skillReset"
-          >
-            リセット
-          </v-btn>
-        </div>
-        <div
-          v-for="(detail, codeIndex) in jobDetails"
-          :key="codeIndex"
-          style="width: 870px"
+      </div>
+      <div class="d-flex flex-wrap flex-row justify-center">
+        <v-card
+          v-for="(item, itemInd) in itemsWithRequires"
+          :key="itemInd"
+          class="ma-1 pa-2 item-card"
         >
-          <div class="d-flex align-center">
-            <div style="display: inline-block">
-              <v-card
-                class="pa-1 text-center"
-                style="
-                  min-width: 170px;
-                  background-color: rgb(255, 255, 200);
-                  font-size: 13px;
+          <div class="d-flex flex-nowrap flex-row justify-space-between">
+            <v-avatar>
+              <v-img
+                :src="
+                  'https://rotool.gungho.jp/icon/' +
+                  item.searchItem.itemId +
+                  '.png'
                 "
-              >
-                {{ detail.name }} : Lv {{ lvOfJob[codeIndex] }} /
-                {{ detail.lv }}
-              </v-card>
-            </div>
-            <div
-              v-for="(trans, transIndex) in transfers.filter(
-                (tran: any) => tran.to === codeIndex,
-              )"
-              :key="transIndex"
-              class="ml-3"
-              style="font-size: 11px; color: red; font-weight: bold; z-index: 2"
+              ></v-img
+            ></v-avatar>
+            {{ item.itemName }}
+
+            <v-btn
+              icon
+              class="ma-1"
+              color="error"
+              size="x-small"
+              @click="deleteItemWithRequires(item)"
             >
-              {{ trans.num }} ポイントを {{ trans.from + 1 }} 次スキルに使用中
-            </div>
+              <v-icon>mdi-delete</v-icon>
+            </v-btn>
           </div>
-          <v-row class="ma-0 pa-0">
+          要求スキル数: {{ item.requires.length }}
+          <v-btn
+            class="ma-1"
+            color="secondary"
+            size="small"
+            :disabled="item.requires.length === 0"
+            @click="setRequiredSkills(item)"
+          >
+            スキル習得
+          </v-btn>
+          <v-btn
+            class="ma-1"
+            color="info"
+            size="small"
+            @click="openDetail(item)"
+          >
+            詳細
+          </v-btn>
+        </v-card>
+      </div>
+      <div class="radio-group d-flex flex-row justify-center align-center">
+        <v-radio-group v-model="baby" direction="horizontal" label="転生">
+          <v-radio label="あり" color="secondary" :value="false"></v-radio>
+          <v-radio
+            label="なし（養子）"
+            color="secondary"
+            :value="true"
+          ></v-radio>
+        </v-radio-group>
+      </div>
+      <div class="d-flex flex-no-wrap justify-between align-center">
+        <v-btn
+          class="mr-4"
+          style="margin-left: auto"
+          color="error"
+          small
+          @click="skillReset"
+        >
+          リセット
+        </v-btn>
+      </div>
+    </div>
+    <div class="d-flex justify-center flex-column align-center">
+      <div class="svg-container">
+        <svg
+          id="background"
+          class="svg"
+          :view-box.camel="viewBox"
+          :width="maxx"
+          :height="maxy"
+        >
+          <path
+            v-for="(path, index) in relationPaths"
+            :key="'path' + index"
+            :d="path"
+            :stroke="relationColor(relations[index])"
+            fill="transparent"
+          />
+        </svg>
+      </div>
+      <div
+        v-for="(job, codeIndex) in jobMaps"
+        :key="codeIndex"
+        class="tree-container"
+      >
+        <div class="d-flex align-center">
+          <div>
+            <v-card class="pa-1 text-center job-info">
+              {{ job.detail.name }} : Lv {{ job.currentLv }} /
+              {{ job.detail.lv }}
+            </v-card>
+          </div>
+          <div
+            v-for="(trans, transIndex) in job.transfers"
+            :key="transIndex"
+            class="ml-3 transfer"
+          >
+            {{ trans.num }} ポイントを {{ trans.from + 1 }} 次スキルに使用中
+          </div>
+        </div>
+        <div class="card-container">
+          <div
+            v-for="(skill, index) in job.skills"
+            :key="index"
+            class="mx-auto skill-card-wrap"
+            :style="{
+              display:
+                skill.skill.name === 'dummy' && !isLg ? 'none' : 'initial',
+            }"
+          >
             <div
-              v-for="(skill, index) in treeOfJob(detail.code)"
-              :key="index"
-              class="mx-auto"
+              v-for="(itemWithReq, inde) in skill.irs"
+              :key="inde"
               :style="{
-                padding: '8px 12px',
-                position: 'relative',
+                top: `${3 + inde * 17}px`,
               }"
+              class="d-flex justify-center align-center skill-badge"
             >
-              <div
-                v-for="(itemWithReq, inde) in badgeOfSkill(skill)"
-                :key="inde"
-                :style="{
-                  zIndex: 1,
-                  height: '18px',
-                  width: '18px',
-                  borderRadius: '9px',
-                  fontSize: '14px',
-                  left: '-3px',
-                  position: 'absolute',
-                  top: `${3 + index * 19}px`,
-                  color: 'white',
-                  backgroundColor: 'tomato',
-                }"
-                class="d-flex justify-center align-center"
-              >
-                <v-tooltip color="lime lighten-5" bottom>
-                  <template #activator="{ on }">
-                    <div style="user-select: none" v-on="on">
-                      {{ itemWithReq.itemName.charAt(0) }}
-                    </div>
-                  </template>
+              <div style="user-select: none">
+                {{ itemWithReq.ir.itemName.charAt(0) }}
+                <v-tooltip activator="parent" class="tooltip" locaion="bottom">
                   <div style="color: black">
-                    <div
-                      v-for="(req, index) in itemWithReq.requires"
-                      :key="index"
-                    >
-                      <span
-                        v-html="
-                          arrangeSkillRequireDescription(
-                            itemWithReq.itemName,
-                            req,
-                          )
-                        "
-                      ></span>
+                    <div v-for="(html, ind) in itemWithReq.htmls" :key="ind">
+                      <span v-html="html"></span>
                     </div>
                   </div>
                 </v-tooltip>
               </div>
-              <div
-                v-if="skill.name === 'dummy'"
-                style="
-                  width: 100px;
-                  height: 45px;
-                  background-color: rgba(0, 0, 0, 0);
-                "
-              ></div>
-              <v-tooltip v-else color="lime lighten-5" bottom>
-                <template #activator="{ on }">
-                  <v-card :id="skill.code" width="100" height="48">
-                    <div
-                      class="d-flex flex-no-wrap justify-center align-center"
-                      style="flex-direction: column"
-                    >
-                      <div
-                        style="
-                          max-width: 90px;
-                          font-size: 12px;
-                          line-height: 12px;
-                          height: 12px;
-                          overflow: hidden;
-                          text-overflow: ellipsis;
-                          white-space: nowrap;
-                        "
-                        class="ma-1"
-                        v-on="on"
-                      >
-                        {{ skill.name }}
-                      </div>
-                      <div class="d-flex justify-space-between align-center">
-                        <v-avatar
-                          style="user-select: none"
-                          size="24"
-                          tile
-                          @click="increment(skill)"
-                          @click.right.prevent="decrement(skill)"
-                        >
-                          <v-img :src="skill.imageUrl"></v-img>
-                        </v-avatar>
-                        <div
-                          class="d-flex justify-center align-center flex-wrap ml-1"
-                          style="width: 55px"
-                        >
-                          <div
-                            v-for="sphereIndex in skill.maxLv"
-                            :key="sphereIndex"
-                            style="
-                              flex: 0 0 11px;
-                              padding: 2px 1px 0px;
-                              user-select: none;
-                              position: relative;
-                            "
-                            @click="
-                              setSkillLv({
-                                name: skill.name,
-                                level: sphereIndex,
-                              })
-                            "
-                            @click.right.prevent="
-                              skill.lv >= sphereIndex
-                                ? setSkillLv({
-                                    name: skill.name,
-                                    level: sphereIndex - 1,
-                                  })
-                                : null
-                            "
-                          >
-                            <v-img src="/skill/sphere_white.png" />
-                            <v-img
-                              v-if="skill.lv >= sphereIndex"
-                              style="position: absolute; top: 2px; left: 1px"
-                              src="/skill/sphere_pink.png"
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </v-card>
-                </template>
-                <span style="color: black" v-html="skill.description"></span>
-              </v-tooltip>
             </div>
-          </v-row>
+            <div v-if="skill.skill.name === 'dummy'" class="dummy"></div>
+            <v-card v-else :id="skill.skill.code" width="100" height="48">
+              <div
+                class="d-flex flex-no-wrap justify-center align-center"
+                style="flex-direction: column"
+              >
+                <div class="ma-1 skill-card">
+                  {{ skill.skill.name }}
+                  <v-tooltip
+                    activator="parent"
+                    class="tooltip"
+                    location="bottom"
+                    ><span
+                      style="color: black"
+                      v-html="skill.skill.description"
+                    ></span>
+                  </v-tooltip>
+                </div>
+                <div class="d-flex justify-space-between align-center">
+                  <v-avatar
+                    style="user-select: none"
+                    size="24"
+                    rounded="0"
+                    @click="increment(skill.skill)"
+                    @contextmenu.prevent="decrement(skill.skill)"
+                  >
+                    <v-img :src="skill.skill.imageUrl"></v-img>
+                  </v-avatar>
+                  <div
+                    class="d-flex justify-center align-center flex-wrap ml-1"
+                    style="width: 55px"
+                  >
+                    <div
+                      v-for="sphereIndex in skill.skill.maxLv"
+                      :key="sphereIndex"
+                      class="sphere"
+                      @click="
+                        setSkillLv({
+                          name: skill.skill.name,
+                          level: sphereIndex,
+                        })
+                      "
+                      @contextmenu.prevent="
+                        skill.skill.lv >= sphereIndex
+                          ? setSkillLv({
+                              name: skill.skill.name,
+                              level: sphereIndex - 1,
+                            })
+                          : null
+                      "
+                    >
+                      <v-img
+                        :src="
+                          '/skill/sphere_' +
+                          (skill.skill.lv >= sphereIndex ? 'pink' : 'white') +
+                          '.png'
+                        "
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </v-card>
+          </div>
         </div>
-        <g-g-copy class="pa-5" style="margin-top: 55px" />
-      </v-flex>
-    </v-row>
-  </v-layout>
+      </div>
+    </div>
+    <g-g-copy class="pa-5" style="margin-top: 55px"
+  /></v-container>
 </template>
+<style lang="scss" scoped>
+  .item-card {
+    flex-grow: 1;
+    text-overflow: ellipsis;
+  }
+  .card-container {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+  }
+  @media screen and (max-width: 639.99px) {
+    .svg-container {
+      width: 350px;
+    }
+    .tree-container {
+      width: 350px;
+    }
+  }
+  @media screen and (min-width: 640px) and (max-width: 849.99px) {
+    .svg-container {
+      width: 600px;
+    }
+    .tree-container {
+      width: 600px;
+    }
+  }
+  @media screen and (min-width: 850px) {
+    .svg-container {
+      width: 840px;
+    }
+    .tree-container {
+      width: 840px;
+    }
+  }
+  @media screen and (min-width: 680px) {
+    .item-card {
+      flex-grow: initial;
+      width: 320px;
+    }
+  }
+  .svg-container {
+    position: relative;
+  }
+  .svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+  .autocomplete {
+    min-width: 300px;
+  }
+  .job-info {
+    min-width: 170px;
+    background-color: rgb(255, 255, 200);
+    font-size: 13px;
+  }
+  .radio-group:deep(.v-selection-control-group) {
+    flex-direction: row;
+    .v-selection-control {
+      flex: 0;
+    }
+  }
+  .tooltip:deep(.v-overlay__content) {
+    background: #f9fbe7 !important;
+  }
+  .transfer {
+    font-size: 11px;
+    color: red;
+    font-weight: bold;
+    z-index: 2;
+  }
+  .skill-card-wrap {
+    padding: 6px;
+    position: relative;
+  }
+  .skill-badge {
+    z-index: 1;
+    height: 16px;
+    width: 16px;
+    border-radius: 8px;
+    font-size: 12px;
+    left: -3px;
+    position: absolute;
+    color: white;
+    background-color: tomato;
+  }
+  .skill-card {
+    max-width: 90px;
+    font-size: 12px;
+    line-height: 12px;
+    height: 12px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    user-select: none;
+  }
+  .dummy {
+    width: 100px;
+    height: 45px;
+    background-color: rgba(0, 0, 0, 0);
+  }
+  .sphere {
+    flex: 0 0 11px;
+    padding: 2px 1px 0px;
+    user-select: none;
+    position: relative;
+  }
+</style>

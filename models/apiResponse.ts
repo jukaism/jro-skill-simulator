@@ -29,11 +29,9 @@ export interface JobSkillResponse {
 }
 
 export interface DescriptionResponse {
-  data: {
-    id: number
-    name: string
-    desc: string
-  }
+  id: number
+  name: string
+  desc: string
 }
 
 export interface OptionResponse {

@@ -1,5 +1,8 @@
 <script setup lang="ts">
   import { JobTree } from '~~/models/skill'
+  definePageMeta({
+    layout: 'skill',
+  })
 
   const jobTree: JobTree = {
     code: 'windhawk',
@@ -11,6 +14,9 @@
       ['JT_WINDHAWK'],
     ],
   }
+
+  const jobName = useDisplayJobName()
+  jobName.value = jobTree.name
 </script>
 
 <template>
