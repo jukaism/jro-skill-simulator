@@ -118,7 +118,7 @@
         </div>
       </div>
     </div>
-    <v-card-title class="mt-2">4-1</v-card-title>
+    <v-card-title class="mt-2 for-sm">4-1</v-card-title>
     <div class="d-flex flex-row flex-wrap justify-center for-sm">
       <a
         v-for="(job, ind) in forOne"
@@ -135,7 +135,7 @@
         {{ job.displayName }}
       </a>
     </div>
-    <v-card-title class="mt-2">4-2</v-card-title>
+    <v-card-title class="mt-2 for-sm">4-2</v-card-title>
     <div class="d-flex flex-row flex-wrap justify-center for-sm">
       <a
         v-for="(job, ind) in forTwo"
@@ -152,7 +152,7 @@
         {{ job.displayName }}
       </a>
     </div>
-    <v-card-title class="mt-2">Others</v-card-title>
+    <v-card-title class="mt-2 for-sm">Others</v-card-title>
     <div class="d-flex flex-row flex-wrap justify-center for-sm">
       <a
         v-for="(job, ind) in other"
