@@ -197,6 +197,23 @@
   .job-name {
     text-decoration: none;
     color: #333;
+    position: relative;
+    &::before {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 1;
+      display: block;
+      width: 100%;
+      height: 100%;
+      content: '';
+      background-color: rgba(0, 0, 0, 0.3);
+      opacity: 0;
+      transition: all 0.5s ease;
+    }
+    &:hover::before {
+      opacity: 1;
+    }
   }
   .box {
     box-sizing: border-box;

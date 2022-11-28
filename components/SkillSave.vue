@@ -67,7 +67,7 @@
       :hide-details="true"
       style="max-width: 250px"
       :items="saves"
-      item-title="text"
+      item-title="t"
       label="Save slots"
       density="compact"
       outlined
