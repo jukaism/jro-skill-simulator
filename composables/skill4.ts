@@ -115,7 +115,7 @@ export const fetchJob = async ({
             maxLv: skiRes.max_lv,
             lv: 0,
             description: desc ? desc : '未実装',
-            imageUrl: '/skill/' + skiRes.code.toLowerCase() + '.png',
+            imageUrl: 'skill/' + skiRes.code.toLowerCase() + '.png',
           })
           allSkillCodes.push(skiRes.code)
           skillCodes.push(skiRes.code)

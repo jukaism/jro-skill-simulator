@@ -291,10 +291,10 @@
     itemsWithRequires.value = []
     fetchJob({
       jobCodes: jobCodes.value.flat(),
-      params: route.params.s === 'string' ? route.params.s : '',
+      params: typeof route.query.s === 'string' ? route.query.s : '',
       callback: decorateRelation,
     })
-    baby.value = route.params.t === 'none'
+    baby.value = route.query.t === 'none'
     cachedSearchItems.value?.reverse().forEach((item: ItemIdAndName) => {
       const searchItem: SearchItem = {
         itemId: Number(item.id),
@@ -629,6 +629,9 @@
 <template>
   <v-container>
     <div class="d-flex flex-column align-center">
+      <v-col class="skill-header d-flex flex-column align-center">
+        <skill-save></skill-save>
+      </v-col>
       <div class="d-flex flex-row justify-space-between flex-wrap">
         <v-autocomplete
           v-model="searchItem"
@@ -723,7 +726,7 @@
         </v-btn>
       </div>
     </div>
-    <div class="d-flex justify-center flex-column align-center">
+    <div class="d-flex justify-center flex-column align-center mt-1">
       <div class="svg-container">
         <svg
           id="background"
@@ -843,7 +846,7 @@
                     >
                       <v-img
                         :src="
-                          '/skill/sphere_' +
+                          'skill/sphere_' +
                           (skill.skill.lv >= sphereIndex ? 'pink' : 'white') +
                           '.png'
                         "
@@ -861,6 +864,20 @@
   /></v-container>
 </template>
 <style lang="scss" scoped>
+  @media screen and (max-width: 799.99px) {
+    .skill-header:deep(.skill-save) {
+      display: initial;
+      width: 100%;
+    }
+  }
+  @media screen and (min-width: 800px) {
+    .skill-header:deep(.skill-save) {
+      display: none !important;
+    }
+  }
+  .skill-header {
+    gap: 8px;
+  }
   .item-card {
     flex-grow: 1;
     text-overflow: ellipsis;

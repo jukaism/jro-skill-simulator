@@ -1,59 +1,97 @@
 <script setup lang="ts">
+  definePageMeta({
+    layout: 'skill',
+  })
+
   const jobs: {
     name: string
     displayName: string
     dummy: boolean
-  }[] = [
-    { name: 'dummy', displayName: '', dummy: true },
-    { name: 'dragonknight', displayName: 'Dragon Knight', dummy: false },
-    { name: 'archmage', displayName: 'Arch Mage', dummy: false },
-    { name: 'windhawk', displayName: 'Wind Hawk', dummy: false },
-    { name: 'dummy', displayName: '', dummy: true },
-    { name: 'dummy', displayName: '', dummy: true },
-    { name: 'cardinal', displayName: 'Cardinal', dummy: false },
-    { name: 'meister', displayName: 'Meister', dummy: false },
-    { name: 'shadowcross', displayName: 'Shadow Cross', dummy: false },
-    { name: 'dummy', displayName: '', dummy: true },
-    { name: 'dummy', displayName: '', dummy: true },
-    { name: 'dummy', displayName: '', dummy: true },
-    { name: 'dummy', displayName: '', dummy: true },
-    { name: 'dummy', displayName: '', dummy: true },
-    { name: 'dummy', displayName: '', dummy: true },
-    { name: 'dummy', displayName: '', dummy: true },
-    { name: 'imperialguard', displayName: 'Imperial Guard', dummy: false },
-    {
-      name: 'elementalmaster',
-      displayName: 'Elemental Master',
-      dummy: false,
-    },
-    { name: 'troubadour', displayName: 'Troubadour', dummy: false },
-    { name: 'trouvere', displayName: 'Trouvere', dummy: false },
-    { name: 'dummy', displayName: '', dummy: true },
-    { name: 'inquisitor', displayName: 'Inquisitor', dummy: false },
-    { name: 'biolo', displayName: 'Biolo', dummy: false },
-    { name: 'abysschaser', displayName: 'Abyss Chaser', dummy: false },
+    compact?: boolean
+  }[][] = [
+    [
+      { name: 'dragonknight', displayName: 'Dragon Knight', dummy: false },
+      { name: 'imperialguard', displayName: 'Imperial Guard', dummy: false },
+      { name: 'archmage', displayName: 'Arch Mage', dummy: false },
+      {
+        name: 'elementalmaster',
+        displayName: 'Elemental Master',
+        dummy: false,
+      },
+    ],
+    [
+      { name: 'windhawk', displayName: 'Wind Hawk', dummy: false },
+      { name: 'troubadour', displayName: 'Troubadour', dummy: false },
+      { name: 'trouvere', displayName: 'Trouvere', dummy: false },
+      { name: 'cardinal', displayName: 'Cardinal', dummy: false },
+      { name: 'inquisitor', displayName: 'Inquisitor', dummy: false },
+    ],
+    [],
+    [
+      { name: 'meister', displayName: 'Meister', dummy: false },
+      { name: 'biolo', displayName: 'Biolo', dummy: false },
+      { name: 'shadowcross', displayName: 'Shadow Cross', dummy: false },
+      { name: 'abysschaser', displayName: 'Abyss Chaser', dummy: false },
+    ],
+    [
+      {
+        name: 'supernovice',
+        displayName: 'Super Novice',
+        dummy: false,
+        compact: true,
+      },
+      {
+        name: 'staremperor',
+        displayName: 'Star Emperor',
+        dummy: false,
+        compact: true,
+      },
+      {
+        name: 'soulreaper',
+        displayName: 'Soul Reaper',
+        dummy: false,
+        compact: true,
+      },
+      { name: 'rebel', displayName: 'Rebellion', dummy: false, compact: true },
+      { name: 'kagerou', displayName: 'Kagerou', dummy: false, compact: true },
+      { name: 'oboro', displayName: 'Oboro', dummy: false, compact: true },
+      {
+        name: 'summoner',
+        displayName: 'Summoner',
+        dummy: false,
+        compact: true,
+      },
+    ],
   ]
 </script>
 
 <template>
-  <v-layout column justify-center align-center>
+  <div class="d-flex flex-column align-center">
     <img
-      src="/menus/4th/krtop.png"
+      src="skill/top.png"
       width="1000"
       height="1000"
       style="position: relative"
       usemap="#skills"
     />
+    <g-g-copy class="pa-5" />
     <div
-      class="d-flex flex-wrap"
-      style="position: absolute; top: 150px; width: 735px"
+      class="d-flex flex-wrap flex-column"
+      style="position: absolute; top: 196px; width: 755px"
     >
-      <div v-for="(job, index) in jobs" :key="index">
-        <div v-if="job.dummy" class="ma-3" style="width: 106px; height: 104px">
-        </div>
-        <div v-else class="box">
+      <div
+        v-for="(jobLine, index) in jobs"
+        :key="index"
+        class="d-flex flex-row flex-norwap justify-space-between job-line"
+      >
+        <div
+          v-for="(job, jobInd) in jobLine"
+          :key="'job' + jobInd"
+          class="box"
+          :class="{ compact: job.compact }"
+        >
           <div class="line_anime">
-            <a :href="`/skillkr/${job.name}`">
+            <a :href="job.name">
               <div class="hover_circle">
                 <div class="hover-name"
                   ><span class="hover-text">{{ job.displayName }}</span></div
@@ -61,7 +99,7 @@
                 <img
                   class="ma-3"
                   style="user-select: none"
-                  :src="`/menus/4th/${job.name}.png`"
+                  :src="`job/${job.name}.png`"
                 />
               </div>
             </a>
@@ -69,11 +107,14 @@
         </div>
       </div>
     </div>
-    <g-g-copy class="pa-5" />
-  </v-layout>
+  </div>
 </template>
 
 <style lang="scss" scoped>
+  .job-line {
+    margin-left: 10px;
+    min-height: 128px;
+  }
   .box {
     box-sizing: border-box;
     display: block;
@@ -83,6 +124,10 @@
     background-position: center center;
     background-repeat: no-repeat;
     background-size: cover;
+    &.compact {
+      width: 105px;
+      height: 139px;
+    }
   }
   .line_anime {
     position: absolute;
@@ -91,10 +136,6 @@
     right: 0;
     bottom: 0;
     overflow: hidden;
-  }
-  .sim-link {
-    width: 106px;
-    height: 104px;
   }
   .line_anime:before,
   .line_anime:after,
