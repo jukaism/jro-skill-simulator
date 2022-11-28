@@ -15,8 +15,6 @@
       { name: 'dragonknight', displayName: 'Dragon Knight', dummy: false },
       { name: 'archmage', displayName: 'Arch Mage', dummy: false },
       { name: 'windhawk', displayName: 'Wind Hawk', dummy: false },
-      { name: 'troubadour', displayName: 'Troubadour', dummy: false },
-      { name: 'trouvere', displayName: 'Trouvere', dummy: false },
     ],
     [
       { name: 'cardinal', displayName: 'Cardinal', dummy: false },
@@ -31,6 +29,8 @@
         displayName: 'Elemental Master',
         dummy: false,
       },
+      { name: 'troubadour', displayName: 'Troubadour', dummy: false },
+      { name: 'trouvere', displayName: 'Trouvere', dummy: false },
       { name: 'inquisitor', displayName: 'Inquisitor', dummy: false },
       { name: 'biolo', displayName: 'Biolo', dummy: false },
       { name: 'abysschaser', displayName: 'Abyss Chaser', dummy: false },
@@ -66,8 +66,8 @@
     ],
   ]
   const forOne: JobCard[] = jobs.flat().slice(0, 6)
-  const forTwo: JobCard[] = jobs.flat().slice(7, 13)
-  const other: JobCard[] = jobs.flat().slice(14)
+  const forTwo: JobCard[] = jobs.flat().slice(6, 13)
+  const other: JobCard[] = jobs.flat().slice(13)
 </script>
 
 <template>
