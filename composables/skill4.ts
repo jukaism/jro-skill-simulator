@@ -123,9 +123,9 @@ export const fetchJob = async ({
         }
       })
     trees.push({
-      jobCode: jobCode,
-      skillCodes: skillCodes,
-      treeSize: treeSize,
+      jobCode,
+      skillCodes,
+      treeSize,
     })
   })
   const validRelations =

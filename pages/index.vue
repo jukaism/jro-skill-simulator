@@ -66,6 +66,12 @@
 </script>
 
 <template>
+  <Html lang="ja">
+    <Head>
+      <Title>{{ 'スキルシミュレータ | やっぱりROが好き！' }}</Title>
+      <Meta name="description" content="リッチスキルシミュレータ 4次職対応版" />
+    </Head>
+  </Html>
   <div class="d-flex flex-column align-center">
     <img
       :src="`job/top.png`"

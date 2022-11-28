@@ -118,12 +118,32 @@
     to: number
     num: number
   }
+  interface SkillConfig {
+    skillDesc: boolean
+    badgeDesc: boolean
+  }
   const props = withDefaults(defineProps<JobProps>(), {
     allJobCodes: () => [],
   })
   const route = useRoute()
   const itemsWithRequires = useItemsWithRequires()
   const baby: Ref<boolean> = useBaby()
+  const skillConfig = useCookie<SkillConfig>('skillConfig', {
+    default: () => {
+      return { skillDesc: true, badgeDesc: true }
+    },
+  })
+  const skillDesc: Ref<boolean> = ref(skillConfig.value?.skillDesc || true)
+  const badgeDesc: Ref<boolean> = ref(skillConfig.value?.badgeDesc || true)
+  watch(skillDesc, saveConfig)
+  watch(badgeDesc, saveConfig)
+  function saveConfig() {
+    skillConfig.value = {
+      skillDesc: skillDesc.value,
+      badgeDesc: badgeDesc.value,
+    }
+  }
+
   const jobTypes: JobType[] = [
     { name: '1st', lv: 50 },
     { name: '2nd', lv: 70 },
@@ -549,11 +569,11 @@
     })
   }
   const trees = useTrees()
-  function treeOfJob(jobCodes: string[]): Skill[] {
+  function treeOfJob(jc: string[]): Skill[] {
     let jobSkills: Skill[] = []
     let treeSize = 0
     trees.value.forEach((tree: JobTree4) => {
-      if (jobCodes.includes(tree.jobCode)) {
+      if (jc.includes(tree.jobCode)) {
         treeSize = Math.max(treeSize, tree.treeSize)
         jobSkills = jobSkills.concat(
           skills.value.filter((skill: Skill) =>
@@ -581,29 +601,34 @@
     }
     return skillsWithDummys
   }
+  interface CodesWithLv {
+    codes: JobCode[]
+    lv: number
+  }
   const lvsOfJob = computed((): number[] => {
-    let lvs: number[] = []
-    jobCodes.value.forEach((jobCodes: string[]) => {
-      let lv = 1
-      trees.value.forEach((tree: JobTree4) => {
-        if (jobCodes.includes(tree.jobCode)) {
-          skills.value
-            .filter((skill: Skill) => tree.skillCodes.includes(skill.code))
-            .forEach((skill: Skill) => {
-              lv = lv + skill.lv
-            })
-        }
-      })
-      lvs.push(lv)
+    let codeLvs: CodesWithLv[] = jobCodes.value.map((jc) => {
+      return {
+        codes: jc,
+        lv: 1,
+      }
     })
-    return lvs
+    skills.value.forEach((skill) => {
+      const jobCode: JobCode | undefined = trees.value.find((tree) =>
+        tree.skillCodes.includes(skill.code),
+      )?.jobCode
+      if (jobCode) {
+        const index = codeLvs.findIndex((cl) => cl.codes.includes(jobCode))
+        codeLvs[index].lv += skill.lv
+      }
+    })
+    return codeLvs.map((cl) => cl.lv)
   })
   const transfers: Ref<Transfer[]> = ref([])
   const lvOfJob = computed((): number[] => {
     transfers.value = []
     const lvs: number[] = lvsOfJob.value
     jobDetails.value.forEach((detail, ind) => {
-      for (var i = ind + 1; i < jobCodes.value.length; i++) {
+      for (var i = ind + 1; i < jobDetails.value.length; i++) {
         if (lvs[ind] > detail.lv) {
           const transfer: number = Math.min(
             lvs[ind] - detail.lv,
@@ -704,15 +729,37 @@
           </v-btn>
         </v-card>
       </div>
-      <div class="radio-group d-flex flex-row justify-center align-center">
-        <v-radio-group v-model="baby" direction="horizontal" label="転生">
-          <v-radio label="あり" color="secondary" :value="false"></v-radio>
-          <v-radio
-            label="なし（養子）"
-            color="secondary"
-            :value="true"
-          ></v-radio>
-        </v-radio-group>
+      <div class="d-flex flex-row flex-wrap">
+        <div class="radio-group d-flex flex-row justify-center align-center">
+          <v-radio-group
+            v-model="skillDesc"
+            direction="horizontal"
+            label="スキル説明"
+          >
+            <v-radio label="あり" color="secondary" :value="true"></v-radio>
+            <v-radio label="なし" color="secondary" :value="false"></v-radio>
+          </v-radio-group>
+        </div>
+        <div class="radio-group d-flex flex-row justify-center align-center">
+          <v-radio-group
+            v-model="badgeDesc"
+            direction="horizontal"
+            label="バッジ説明"
+          >
+            <v-radio label="あり" color="secondary" :value="true"></v-radio>
+            <v-radio label="なし" color="secondary" :value="false"></v-radio>
+          </v-radio-group>
+        </div>
+        <div class="radio-group d-flex flex-row justify-center align-center">
+          <v-radio-group v-model="baby" direction="horizontal" label="転生">
+            <v-radio label="あり" color="secondary" :value="false"></v-radio>
+            <v-radio
+              label="なし（養子）"
+              color="secondary"
+              :value="true"
+            ></v-radio>
+          </v-radio-group>
+        </div>
       </div>
       <div class="d-flex flex-no-wrap justify-between align-center">
         <v-btn
@@ -784,7 +831,12 @@
             >
               <div style="user-select: none">
                 {{ itemWithReq.ir.itemName.charAt(0) }}
-                <v-tooltip activator="parent" class="tooltip" locaion="bottom">
+                <v-tooltip
+                  v-if="badgeDesc"
+                  activator="parent"
+                  class="tooltip"
+                  locaion="bottom"
+                >
                   <div style="color: black">
                     <div v-for="(html, ind) in itemWithReq.htmls" :key="ind">
                       <span v-html="html"></span>
@@ -802,6 +854,7 @@
                 <div class="ma-1 skill-card">
                   {{ skill.skill.name }}
                   <v-tooltip
+                    v-if="skillDesc"
                     activator="parent"
                     class="tooltip"
                     location="bottom"
@@ -867,6 +920,7 @@
   @media screen and (max-width: 799.99px) {
     .skill-header:deep(.skill-save) {
       display: initial;
+      justify-content: space-between;
       width: 100%;
     }
   }

@@ -69,9 +69,7 @@
   }
 </script>
 <template>
-  <div
-    class="d-flex flex-row flex-nowrap align-center justify-space-between flex-grow-1 skill-save"
-  >
+  <div class="d-flex flex-row flex-nowrap align-center flex-grow-1 skill-save">
     <v-select
       v-if="saves"
       v-model="selectedSave"
@@ -89,9 +87,7 @@
       Load
     </v-btn>
   </div>
-  <div
-    class="d-flex flex-row flex-nowrap align-center justify-space-between flex-grow-1 skill-save"
-  >
+  <div class="d-flex flex-row flex-nowrap align-center flex-grow-1 skill-save">
     <v-text-field
       v-model="memo"
       class="ml-4 flex-grow-1"
