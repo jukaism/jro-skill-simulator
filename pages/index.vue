@@ -3,34 +3,36 @@
     layout: 'skill',
   })
 
-  const jobs: {
+  interface JobCard {
     name: string
     displayName: string
     dummy: boolean
     compact?: boolean
-  }[][] = [
+  }
+
+  const jobs: JobCard[][] = [
     [
       { name: 'dragonknight', displayName: 'Dragon Knight', dummy: false },
-      { name: 'imperialguard', displayName: 'Imperial Guard', dummy: false },
       { name: 'archmage', displayName: 'Arch Mage', dummy: false },
+      { name: 'windhawk', displayName: 'Wind Hawk', dummy: false },
+      { name: 'troubadour', displayName: 'Troubadour', dummy: false },
+      { name: 'trouvere', displayName: 'Trouvere', dummy: false },
+    ],
+    [
+      { name: 'cardinal', displayName: 'Cardinal', dummy: false },
+      { name: 'meister', displayName: 'Meister', dummy: false },
+      { name: 'shadowcross', displayName: 'Shadow Cross', dummy: false },
+      { name: 'imperialguard', displayName: 'Imperial Guard', dummy: false },
+    ],
+    [],
+    [
       {
         name: 'elementalmaster',
         displayName: 'Elemental Master',
         dummy: false,
       },
-    ],
-    [
-      { name: 'windhawk', displayName: 'Wind Hawk', dummy: false },
-      { name: 'troubadour', displayName: 'Troubadour', dummy: false },
-      { name: 'trouvere', displayName: 'Trouvere', dummy: false },
-      { name: 'cardinal', displayName: 'Cardinal', dummy: false },
       { name: 'inquisitor', displayName: 'Inquisitor', dummy: false },
-    ],
-    [],
-    [
-      { name: 'meister', displayName: 'Meister', dummy: false },
       { name: 'biolo', displayName: 'Biolo', dummy: false },
-      { name: 'shadowcross', displayName: 'Shadow Cross', dummy: false },
       { name: 'abysschaser', displayName: 'Abyss Chaser', dummy: false },
     ],
     [
@@ -63,6 +65,9 @@
       },
     ],
   ]
+  const forOne: JobCard[] = jobs.flat().slice(0, 6)
+  const forTwo: JobCard[] = jobs.flat().slice(7, 13)
+  const other: JobCard[] = jobs.flat().slice(14)
 </script>
 
 <template>
@@ -74,15 +79,15 @@
   </Html>
   <div class="d-flex flex-column align-center">
     <img
+      class="for-lg"
       :src="`job/top.png`"
       width="1000"
       height="1000"
       style="position: relative"
       usemap="#skills"
     />
-    <g-g-copy class="pa-5" />
     <div
-      class="d-flex flex-wrap flex-column"
+      class="d-flex flex-wrap flex-column for-lg"
       style="position: absolute; top: 196px; width: 755px"
     >
       <div
@@ -113,13 +118,85 @@
         </div>
       </div>
     </div>
+    <v-card-title class="mt-2">4-1</v-card-title>
+    <div class="d-flex flex-row flex-wrap justify-center for-sm">
+      <a
+        v-for="(job, ind) in forOne"
+        :key="'job' + ind"
+        class="d-flex flex-column align-center justify-center job-name"
+        :class="{ compact: job.compact }"
+        :href="job.name"
+      >
+        <img
+          class="ma-3"
+          style="user-select: none"
+          :src="`job/${job.name}.png`"
+        />
+        {{ job.displayName }}
+      </a>
+    </div>
+    <v-card-title class="mt-2">4-2</v-card-title>
+    <div class="d-flex flex-row flex-wrap justify-center for-sm">
+      <a
+        v-for="(job, ind) in forTwo"
+        :key="'job' + ind"
+        class="d-flex flex-column align-center justify-center job-name"
+        :class="{ compact: job.compact }"
+        :href="job.name"
+      >
+        <img
+          class="ma-3"
+          style="user-select: none"
+          :src="`job/${job.name}.png`"
+        />
+        {{ job.displayName }}
+      </a>
+    </div>
+    <v-card-title class="mt-2">Others</v-card-title>
+    <div class="d-flex flex-row flex-wrap justify-center for-sm">
+      <a
+        v-for="(job, ind) in other"
+        :key="'job' + ind"
+        class="d-flex flex-column align-center justify-center job-name"
+        :class="{ compact: job.compact }"
+        :href="job.name"
+      >
+        <img
+          class="ma-3"
+          style="user-select: none"
+          :src="`job/${job.name}.png`"
+        />
+        {{ job.displayName }}
+      </a>
+    </div>
+    <g-g-copy class="pa-5" />
   </div>
 </template>
 
 <style lang="scss" scoped>
+  @media screen and (max-width: 849.99px) {
+    .for-sm {
+      display: initial;
+    }
+    .for-lg {
+      display: none !important;
+    }
+  }
+  @media screen and (min-width: 850px) {
+    .for-sm {
+      display: none !important;
+    }
+    .for-lg {
+      display: initial;
+    }
+  }
   .job-line {
     margin-left: 10px;
     min-height: 128px;
+  }
+  .job-name {
+    text-decoration: none;
+    color: #333;
   }
   .box {
     box-sizing: border-box;

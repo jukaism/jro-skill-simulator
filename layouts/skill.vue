@@ -108,7 +108,8 @@
   <v-app dark>
     <v-navigation-drawer v-model="drawer" temporary fixed>
       <v-list v-model:opened="open">
-        <v-list-item title="Top" to="../" exact link> </v-list-item>
+        <v-list-item title="Top" href="https://yapparo.net" exact link>
+        </v-list-item>
         <v-list-group
           v-for="(item, index) in items"
           :key="item.text + index"
