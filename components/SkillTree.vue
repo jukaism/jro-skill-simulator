@@ -178,7 +178,7 @@
     { code: 'JT_CRUSADER', name: 'Crusader', type: '2nd_native' },
     { code: 'JT_CRUSADER_H', name: 'Paladin', type: '2nd' },
     { code: 'JT_SAGE', name: 'Sage', type: '2nd_native' },
-    { code: 'JT_SAGEE_H', name: 'Professor', type: '2nd' },
+    { code: 'JT_SAGE_H', name: 'Professor', type: '2nd' },
     { code: 'JT_BARD', name: 'Bard', type: '2nd_native' },
     { code: 'JT_BARD_H', name: 'Clown', type: '2nd' },
     { code: 'JT_DANCER', name: 'Dancer', type: '2nd_native' },
@@ -1006,7 +1006,7 @@
     }
   }
   .tooltip:deep(.v-overlay__content) {
-    max-width: 80% !important;
+    max-width: min(80%, 640px) !important;
     background: #f9fbe7 !important;
     font-size: 11px !important;
   }
