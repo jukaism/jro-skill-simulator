@@ -1,5 +1,6 @@
 <script setup lang="ts">
   import { Ref } from 'vue'
+  import { useDetailDrawer } from '~~/composables/skill4'
   interface Modal {
     visible: boolean
     head: string
@@ -83,6 +84,7 @@
       location.protocol +
       '//' +
       location.host +
+      '/skill4' +
       route.path +
       '?s=' +
       getParams()
@@ -90,7 +92,7 @@
   }
   const open = ref(['4-1'])
   const miniVariant = ref<boolean>(false)
-  const rightDrawer = ref<boolean>(false)
+  const rightDrawer = useDetailDrawer()
   const modal: Ref<Modal> = ref<Modal>({
     visible: false,
     head: '',

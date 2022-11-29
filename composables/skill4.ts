@@ -19,6 +19,8 @@ interface WordCandidate {
   candidates: SearchItem[]
 }
 
+export const useDetailDrawer = () =>
+  useState<boolean>('rightDrawer', () => false)
 export const useDisplayJobName = () =>
   useState<string>('displayJobName', () => '')
 export const useTrees = () => useState<JobTree4[]>('trees', () => [])

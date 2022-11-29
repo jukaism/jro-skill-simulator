@@ -15,6 +15,7 @@
     fetchJob,
     setSkillLv,
     skillReset,
+    useDetailDrawer,
     useItemsWithRequires,
     useSearchCandidates,
     useSkillRelations,
@@ -506,8 +507,10 @@
     })
   }
   const itemDetail = useItemDetail()
+  const rightDrawer = useDetailDrawer()
   function openDetail(itemWithRequires: ItemWithRequires) {
     itemDetail.value = itemWithRequires.itemDescription
+    rightDrawer.value = true
   }
   function deleteItemWithRequires(itemWithRequires: ItemWithRequires) {
     removeItemDetail(itemWithRequires)
