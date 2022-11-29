@@ -338,6 +338,11 @@
       }
     })
   })
+  onBeforeUnmount(() => {
+    skills.value = []
+    trees.value = []
+    relations.value = []
+  })
   function relationColor(relation: SkillRelation): string {
     const target = skills.value.find(
       (skill: Skill) => skill.code === relation.from,

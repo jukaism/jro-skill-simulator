@@ -6,7 +6,7 @@
 
   const jobTree: JobTree = {
     code: 'inquisitor',
-    name: 'インキジター',
+    name: 'インクイジター',
     jobCodes: [
       ['JT_ACOLYTE'],
       ['JT_MONK_H', 'JT_MONK'],

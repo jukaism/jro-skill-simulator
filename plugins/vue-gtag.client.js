@@ -7,7 +7,7 @@ export default defineNuxtPlugin((nuxtApp) => {
     VueGtag,
     {
       property: {
-        id: 'G-XMCMVBDRYH',
+        id: 'G-6KSJPVL0P1',
       },
       appName: 'やっぱりROが好き！',
       enabled: getGDPR === 'true',

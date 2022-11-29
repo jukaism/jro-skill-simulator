@@ -29,7 +29,6 @@ export const useSkillGroups = () =>
 export const useSkillRelations = () =>
   useState<SkillRelation[]>('skillRelations', () => [])
 export const useSkills = () => useState<Skill[]>('skills', () => [])
-export const useJobCodes = () => useState<JobCode[][]>('jobCodes', () => [])
 export const useSearchWord = () => useState<string>('searchWord', () => '')
 export const useSearchCandidates = () =>
   useState<SearchItem[]>('searchCandidates', () => [])
@@ -56,7 +55,6 @@ export const useBaby = () => useState<boolean>('baby', () => false)
 const treesRef = useTrees()
 const skillRelationsRef = useSkillRelations()
 const skillsRef = useSkills()
-const jobCodesRef = useJobCodes()
 const searchWordRef = useSearchWord()
 const searchCandidatesRef = useSearchCandidates()
 const storedCandidatesRef = useStoredCandidates()
@@ -169,20 +167,6 @@ export const fetchJob = async ({
   relationsRef.value = relations
   setParams(params)
   callback()
-}
-
-export const resetDisabledSkill = () => {
-  treesRef.value
-    .filter((tree) => {
-      return !jobCodesRef.value.flat().includes(tree.jobCode)
-    })
-    .forEach((tree: JobTree4) => {
-      skillsRef.value.forEach((sk) => {
-        if (tree.skillCodes.includes(sk.code)) {
-          decrementSkillLv({ target: sk, level: 0 })
-        }
-      })
-    })
 }
 
 // Skill sets <=> URLParameters
