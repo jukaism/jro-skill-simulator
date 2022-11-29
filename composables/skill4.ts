@@ -108,6 +108,10 @@ export const fetchJob = async ({
               desc = desc.replace(str, '')
             }
           })
+          const apAmounts = Number(skiRes.ap_amount)
+          if (0 < apAmounts || 0 < skiRes.ap_amount?.split(',').length) {
+            desc += `<hr><div style="text-align: center; color: tomato; margin: 5px;">消費AP: ${skiRes.ap_amount}</div>`
+          }
           skills.push({
             id: id,
             code: skiRes.code,

@@ -10,6 +10,7 @@ export interface SkillResponse {
   max_lv: number
   skill_type: 'Quest' | 'Soul' | null
   sp_amount: string
+  ap_amount: string
   b_separate_lv: 0 | 1
   attack_range: string
   description: string

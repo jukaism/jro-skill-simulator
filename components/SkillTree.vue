@@ -183,6 +183,8 @@
     { code: 'JT_BARD_H', name: 'Clown', type: '2nd' },
     { code: 'JT_DANCER', name: 'Dancer', type: '2nd_native' },
     { code: 'JT_DANCER_H', name: 'Gypsy', type: '2nd' },
+    { code: 'JT_MONK', name: 'Monk', type: '2nd_native' },
+    { code: 'JT_MONK_H', name: 'Champion', type: '2nd' },
     { code: 'JT_ROGUE', name: 'Rogue', type: '2nd_native' },
     { code: 'JT_ROGUE_H', name: 'Chaser', type: '2nd' },
     { code: 'JT_ROGUE', name: 'Rogue', type: '2nd_native' },
@@ -626,7 +628,9 @@
       )?.jobCode
       if (jobCode) {
         const index = codeLvs.findIndex((cl) => cl.codes.includes(jobCode))
-        codeLvs[index].lv += skill.lv
+        if (codeLvs[index]) {
+          codeLvs[index].lv += skill.lv
+        }
       }
     })
     return codeLvs.map((cl) => cl.lv)
@@ -1002,7 +1006,9 @@
     }
   }
   .tooltip:deep(.v-overlay__content) {
+    max-width: 80% !important;
     background: #f9fbe7 !important;
+    font-size: 11px !important;
   }
   .transfer {
     font-size: 11px;
