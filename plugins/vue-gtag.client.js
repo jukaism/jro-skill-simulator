@@ -9,7 +9,7 @@ export default defineNuxtPlugin((nuxtApp) => {
       property: {
         id: 'G-XMCMVBDRYH',
       },
-      appName: 'APP NAME',
+      appName: 'やっぱりROが好き！',
       enabled: getGDPR === 'true',
       pageTrackerScreenviewEnabled: true,
     },
