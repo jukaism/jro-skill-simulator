@@ -345,16 +345,18 @@
     trees.value = []
     relations.value = []
   })
-  function relationColor(relation: SkillRelation): string {
-    const target = skills.value.find(
-      (skill: Skill) => skill.code === relation.from,
-    )
-    if (target && target.lv >= relation.lv) {
-      return 'orange'
-    } else {
-      return '#AAAAAA'
-    }
-  }
+  const relationColors = computed((): string[] =>
+    relations.value.map((relation) => {
+      const target = skills.value.find(
+        (skill: Skill) => skill.code === relation.from,
+      )
+      if (target && target.lv >= relation.lv) {
+        return 'orange'
+      } else {
+        return '#AAAAAA'
+      }
+    }),
+  )
   const relationPaths: Ref<string[]> = ref<string[]>([])
   function drawRelation() {
     relationPaths.value = []
@@ -801,7 +803,7 @@
             v-for="(path, index) in relationPaths"
             :key="'path' + index"
             :d="path"
-            :stroke="relationColor(relations[index])"
+            :stroke="relationColors[index]"
             fill="transparent"
           />
         </svg>
