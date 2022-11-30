@@ -20,6 +20,7 @@ export interface Skill {
   lv: number
   description: string
   imageUrl: string
+  ap?: 'AP+' | 'AP-'
 }
 
 export interface SkillGroup {

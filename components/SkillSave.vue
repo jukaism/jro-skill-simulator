@@ -77,7 +77,10 @@
       Load
     </v-btn>
   </div>
-  <div class="d-flex flex-row flex-nowrap align-center flex-grow-1 skill-save">
+  <div
+    v-if="1 < route.path.length"
+    class="d-flex flex-row flex-nowrap align-center flex-grow-1 skill-save"
+  >
     <v-text-field
       v-model="memo"
       class="ml-4 flex-grow-1"

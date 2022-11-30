@@ -15,6 +15,6 @@ export default defineNuxtConfig({
     },
   },
   app: {
-    baseURL: '/skill4/',
+    baseURL: '/skill/',
   },
 })

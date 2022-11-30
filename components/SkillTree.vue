@@ -21,7 +21,7 @@
     useSkillRelations,
     useSkills,
     useTrees,
-  } from '~~/composables/skill4'
+  } from '~~/composables/skill'
   type JobName =
     | 'Swordman'
     | 'Magician'
@@ -857,6 +857,12 @@
                 </v-tooltip>
               </div>
             </div>
+            <div
+              v-if="skill.skill.ap"
+              class="ap-badge"
+              :class="{ minus: skill.skill.ap === 'AP-' }"
+              >{{ skill.skill.ap }}</div
+            >
             <div v-if="skill.skill.name === 'dummy'" class="dummy"></div>
             <v-card v-else :id="skill.skill.code" width="100" height="48">
               <div
@@ -1017,6 +1023,7 @@
     z-index: 2;
   }
   .skill-card-wrap {
+    margin-bottom: 2px;
     padding: 6px;
     position: relative;
   }
@@ -1030,6 +1037,18 @@
     position: absolute;
     color: white;
     background-color: tomato;
+  }
+  .ap-badge {
+    z-index: 1;
+    font-size: 10px;
+    font-weight: bold;
+    top: -2px;
+    right: -3px;
+    position: absolute;
+    color: blue;
+    &.minus {
+      color: red;
+    }
   }
   .skill-card {
     max-width: 90px;

@@ -94,7 +94,7 @@ export const fetchJob = async ({
         }
         if (skiRes.skill_type !== 'Quest' && skiRes.skill_type !== 'Soul') {
           const id = skiRes.tree
-          let desc = skiRes?.description
+          let desc = skiRes?.description || ''
           const reqOfJob = desc?.match(
             /[0-9]+<span style=\"color: #[0-9a-fA-F]+;\">習得条件 : [^<]+<\/span><br>/g,
           )
@@ -108,9 +108,14 @@ export const fetchJob = async ({
               desc = desc.replace(str, '')
             }
           })
+          let ap: 'AP+' | 'AP-' | undefined = undefined
           const apAmounts = Number(skiRes.ap_amount)
+          if (desc.includes('>AP回復量')) {
+            ap = 'AP+'
+          }
           if (0 < apAmounts || 0 < skiRes.ap_amount?.split(',').length) {
             desc += `<hr><div style="text-align: center; color: tomato; margin: 5px;">消費AP: ${skiRes.ap_amount}</div>`
+            ap = 'AP-'
           }
           skills.push({
             id: id,
@@ -118,8 +123,9 @@ export const fetchJob = async ({
             name: skiRes.name,
             maxLv: skiRes.max_lv,
             lv: 0,
-            description: desc ? desc : '未実装',
+            description: desc || '未実装',
             imageUrl: 'skill/' + skiRes.code.toLowerCase() + '.png',
+            ap,
           })
           allSkillCodes.push(skiRes.code)
           skillCodes.push(skiRes.code)

@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import { Ref } from 'vue'
-  import { useDetailDrawer } from '~~/composables/skill4'
+  import { useDetailDrawer } from '~~/composables/skill'
   interface Modal {
     visible: boolean
     head: string
@@ -84,7 +84,7 @@
       location.protocol +
       '//' +
       location.host +
-      '/skill4' +
+      '/skill' +
       route.path +
       '?s=' +
       getParams()
@@ -137,7 +137,13 @@
       <v-toolbar-title class="job-name" :text="jobName" />
       <skill-save></skill-save>
       <v-spacer />
-      <v-btn class="mr-4" color="primary" small @click.stop="generateUrl">
+      <v-btn
+        v-if="1 < route.path.length"
+        class="mr-4"
+        color="primary"
+        small
+        @click.stop="generateUrl"
+      >
         URL
       </v-btn>
       <v-dialog v-model="modal.visible" max-width="600">
