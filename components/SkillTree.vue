@@ -225,7 +225,7 @@
     { code: 'JT_SOUL_REAPER', name: 'Soul Reaper', type: '3rd' },
     { code: 'JT_NINJA', name: 'Ninja', type: '1st_sp' },
     { code: 'JT_KAGEROU', name: 'Kagerou', type: '2nd' },
-    { code: 'JT_Oboro', name: 'Oboro', type: '2nd' },
+    { code: 'JT_OBORO', name: 'Oboro', type: '2nd' },
     { code: 'JT_GUNSLINGER', name: 'Gunslinger', type: '1st_sp' },
     { code: 'JT_REBELLION', name: 'Rebellion', type: '2nd' },
     { code: 'JT_SUPERNOVICE', name: 'Super Novice', type: '1st_sp_novice' },
