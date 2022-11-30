@@ -240,8 +240,8 @@
     element: HTMLElement
   }
   const elements: Ref<Element[]> = ref([])
-  const maxx: Ref<number> = ref(1200)
-  const maxy: Ref<number> = ref(700)
+  const maxx: Ref<number> = ref(350)
+  const maxy: Ref<number> = ref(300)
   const jobCodes = computed(
     (): JobCode[][] =>
       props.allJobCodes?.map((codes) => {
@@ -288,7 +288,7 @@
       }
     }),
   )
-  const viewBox = computed((): string => `0 0 1200 ${maxy.value}`)
+  const viewBox = computed((): string => `0 0 ${maxx.value} ${maxy.value}`)
   const skills = useSkills()
   const relations = useSkillRelations()
   const cachedSearchItems = useCookie<ItemIdAndName[]>(
@@ -356,7 +356,7 @@
     }
   }
   const relationPaths: Ref<string[]> = ref<string[]>([])
-  watch(elements, (_) => {
+  function drawRelation() {
     relationPaths.value = []
     if (bgElement.value) {
       const bgLeft: number = bgElement.value.getBoundingClientRect().left
@@ -436,11 +436,10 @@
             }
           }
           relationPaths.value.push(path)
-          maxy.value = Math.max(startY + 10, endY + 10, maxy.value)
         }
       })
     }
-  })
+  }
   function cardCenterX(name: string): number {
     const rect = getCardRect(name)
     if (rect && bgElement.value) {
@@ -455,7 +454,6 @@
   function cardCenterY(name: string): number {
     const rect = getCardRect(name)
     if (rect && bgElement.value) {
-      maxy.value = Math.max(rect.bottom, maxy.value)
       return (
         (rect.top + rect.bottom) / 2 -
         bgElement.value.getBoundingClientRect().top
@@ -563,19 +561,24 @@
     fetchCandidates({ itemName, page: 1 })
   })
   function decorateRelation() {
-    maxy.value = 700
     nextTick(() => {
       bgElement.value = document.getElementById('background')
-      elements.value = []
-      skills.value.forEach((skill: Skill) => {
-        const element = document.getElementById(skill.code)
-        if (element) {
-          elements.value.push({
-            id: skill.code,
-            element,
-          })
-        }
-      })
+      const treeContainer = bgElement.value?.parentElement?.parentElement
+      maxx.value = treeContainer?.offsetWidth || 350
+      maxy.value = treeContainer?.offsetHeight || 300
+      elements.value = skills.value
+        .map((skill: Skill): Element | null => {
+          const element = document.getElementById(skill.code)
+          if (element) {
+            return {
+              id: skill.code,
+              element,
+            }
+          }
+          return null
+        })
+        .filter((el): el is Element => el !== null)
+      drawRelation()
     })
   }
   const trees = useTrees()
@@ -990,6 +993,7 @@
     }
   }
   .svg-container {
+    height: 100%;
     position: relative;
   }
   .svg {
