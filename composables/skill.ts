@@ -1,11 +1,3 @@
-import {
-  Skill,
-  SkillGroup,
-  SkillRelation,
-  SkillRequire,
-  ItemWithRequires,
-  ItemIdAndName,
-} from '@/models/job'
 import { SearchItem, ItemDescription } from '../models/roten'
 import {
   SkillResponse,
@@ -13,7 +5,16 @@ import {
   RelationResponse,
   DescriptionResponse,
 } from '../models/apiResponse'
-import { JobCode, JobTree4 } from '~/models/skill'
+import {
+  JobCode,
+  SkillTree,
+  Skill,
+  SkillGroup,
+  SkillRelation,
+  SkillRequire,
+  ItemWithRequires,
+  ItemIdAndName,
+} from '~/models/skill'
 interface WordCandidate {
   word: string
   candidates: SearchItem[]
@@ -23,7 +24,7 @@ export const useDetailDrawer = () =>
   useState<boolean>('rightDrawer', () => false)
 export const useDisplayJobName = () =>
   useState<string>('displayJobName', () => '')
-export const useTrees = () => useState<JobTree4[]>('trees', () => [])
+export const useTrees = () => useState<SkillTree[]>('trees', () => [])
 export const useSkillGroups = () =>
   useState<SkillGroup[]>('skillGroups', () => [])
 export const useSkillRelations = () =>
@@ -77,7 +78,7 @@ export const fetchJob = async ({
   )
   const jobIds: number[] = []
   const skills: Skill[] = []
-  const trees: JobTree4[] = []
+  const trees: SkillTree[] = []
 
   const relations: SkillRelation[] = []
   const allSkillCodes: string[] = []

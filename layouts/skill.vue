@@ -91,7 +91,7 @@
     modal.value.visible = true
   }
   const open = ref(['4-1'])
-  const miniVariant = ref<boolean>(false)
+
   const rightDrawer = useDetailDrawer()
   const modal: Ref<Modal> = ref<Modal>({
     visible: false,
@@ -167,19 +167,10 @@
     <v-main>
       <slot />
     </v-main>
-    <v-navigation-drawer
-      v-model="rightDrawer"
-      location="right"
-      :mini-variant="miniVariant"
-      :clipped="clipped"
-      :disable-resize-watcher="true"
-      :disable-route-watcher="true"
-      fixed
-      app
-    >
+    <v-navigation-drawer v-model="rightDrawer" location="right">
       <div class="d-flex flex-no-wrap justify-space-between">
         <div>
-          <v-card-subtitle style="padding: 8px 0 0 16px">
+          <div class="py-2 px-4">
             <v-img
               v-if="itemDetail"
               :src="
@@ -188,9 +179,12 @@
               :max-width="75"
               :max-height="100"
             ></v-img>
-          </v-card-subtitle>
+          </div>
           <v-card-title class="pt-1 text-wrap">{{ itemTitle }}</v-card-title>
-          <v-card-subtitle><div v-html="itemHtml"></div></v-card-subtitle>
+          <div
+            class="text-body-2 text-high-emphasis pl-4 pb-4"
+            v-html="itemHtml"
+          ></div>
         </div>
       </div>
     </v-navigation-drawer>

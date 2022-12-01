@@ -1,13 +1,15 @@
 <script setup lang="ts">
   import { SearchItem } from '../models/roten'
   import {
+    JobCode,
+    SkillTree,
+    JobTypeName,
     Skill,
     SkillRelation,
     SkillRequire,
     ItemWithRequires,
     ItemIdAndName,
-  } from '@/models/job'
-  import { JobCode, JobTree4, JobTypeName } from '~/models/skill'
+  } from '~/models/skill'
   import { Ref } from 'vue'
   import {
     fetchCandidates,
@@ -587,7 +589,7 @@
   function treeOfJob(jc: string[]): Skill[] {
     let jobSkills: Skill[] = []
     let treeSize = 0
-    trees.value.forEach((tree: JobTree4) => {
+    trees.value.forEach((tree: SkillTree) => {
       if (jc.includes(tree.jobCode)) {
         treeSize = Math.max(treeSize, tree.treeSize)
         jobSkills = jobSkills.concat(
@@ -704,7 +706,9 @@
           :key="itemInd"
           class="ma-1 pa-2 item-card"
         >
-          <div class="d-flex flex-nowrap flex-row justify-space-between">
+          <div
+            class="d-flex flex-nowrap flex-row justify-space-between align-center"
+          >
             <v-avatar>
               <v-img
                 :src="
