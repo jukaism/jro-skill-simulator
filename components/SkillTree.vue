@@ -24,6 +24,9 @@
     useSkills,
     useTrees,
   } from '~~/composables/skill'
+  interface JobProps {
+    allJobCodes?: JobCode[][]
+  }
   type JobName =
     | 'Swordman'
     | 'Magician'
@@ -112,9 +115,6 @@
     codes: JobCode[]
     name: string
     lv: number
-  }
-  interface JobProps {
-    allJobCodes?: JobCode[][]
   }
   interface Transfer {
     from: number

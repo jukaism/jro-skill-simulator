@@ -1,66 +1,62 @@
 <script setup lang="ts">
   definePageMeta({
     layout: 'skill',
+    jobName: 'RO',
+    code: 'skill',
   })
 
   interface JobCard {
     name: string
     displayName: string
-    dummy: boolean
     compact?: boolean
   }
 
   const jobs: JobCard[][] = [
     [
-      { name: 'dragonknight', displayName: 'Dragon Knight', dummy: false },
-      { name: 'archmage', displayName: 'Arch Mage', dummy: false },
-      { name: 'windhawk', displayName: 'Wind Hawk', dummy: false },
-      { name: 'cardinal', displayName: 'Cardinal', dummy: false },
+      { name: 'dragonknight', displayName: 'Dragon Knight' },
+      { name: 'archmage', displayName: 'Arch Mage' },
+      { name: 'windhawk', displayName: 'Wind Hawk' },
+      { name: 'cardinal', displayName: 'Cardinal' },
     ],
     [
-      { name: 'meister', displayName: 'Meister', dummy: false },
-      { name: 'shadowcross', displayName: 'Shadow Cross', dummy: false },
-      { name: 'imperialguard', displayName: 'Imperial Guard', dummy: false },
+      { name: 'meister', displayName: 'Meister' },
+      { name: 'shadowcross', displayName: 'Shadow Cross' },
+      { name: 'imperialguard', displayName: 'Imperial Guard' },
       {
         name: 'elementalmaster',
         displayName: 'Elemental Master',
-        dummy: false,
       },
     ],
     [],
     [
-      { name: 'troubadour', displayName: 'Troubadour', dummy: false },
-      { name: 'trouvere', displayName: 'Trouvere', dummy: false },
-      { name: 'inquisitor', displayName: 'Inquisitor', dummy: false },
-      { name: 'biolo', displayName: 'Biolo', dummy: false },
-      { name: 'abysschaser', displayName: 'Abyss Chaser', dummy: false },
+      { name: 'troubadour', displayName: 'Troubadour' },
+      { name: 'trouvere', displayName: 'Trouvere' },
+      { name: 'inquisitor', displayName: 'Inquisitor' },
+      { name: 'biolo', displayName: 'Biolo' },
+      { name: 'abysschaser', displayName: 'Abyss Chaser' },
     ],
     [
       {
         name: 'supernovice',
         displayName: 'Super Novice',
-        dummy: false,
         compact: true,
       },
       {
         name: 'staremperor',
         displayName: 'Star Emperor',
-        dummy: false,
         compact: true,
       },
       {
         name: 'soulreaper',
         displayName: 'Soul Reaper',
-        dummy: false,
         compact: true,
       },
-      { name: 'rebel', displayName: 'Rebellion', dummy: false, compact: true },
-      { name: 'kagerou', displayName: 'Kagerou', dummy: false, compact: true },
-      { name: 'oboro', displayName: 'Oboro', dummy: false, compact: true },
+      { name: 'rebel', displayName: 'Rebellion', compact: true },
+      { name: 'kagerou', displayName: 'Kagerou', compact: true },
+      { name: 'oboro', displayName: 'Oboro', compact: true },
       {
         name: 'summoner',
         displayName: 'Summoner',
-        dummy: false,
         compact: true,
       },
     ],
@@ -71,30 +67,21 @@
 </script>
 
 <template>
-  <Html lang="ja">
-    <Head>
-      <Title>{{ 'スキルシミュレータ | やっぱりROが好き！' }}</Title>
-      <Meta name="description" content="リッチスキルシミュレータ 4次職対応版" />
-    </Head>
-  </Html>
-  <div class="d-flex flex-column align-center">
-    <img
-      class="for-lg"
-      :src="`job/top.png`"
-      width="1000"
-      height="1000"
-      style="position: relative"
-      usemap="#skills"
-    />
-    <div
-      class="d-flex flex-wrap flex-column for-lg"
-      style="position: absolute; top: 196px; width: 755px"
-    >
+  <div class="mt-5 text-h5 text-medium-emphasis text-center sim-title for-sm"
+    >Ragnarok online Skill Simulator</div
+  >
+  <div class="d-flex flex-column align-center for-lg">
+    <div class="d-flex flex-wrap flex-column py-3 px-5 ma-5 jobs-wrapper">
       <div
         v-for="(jobLine, index) in jobs"
         :key="index"
-        class="d-flex flex-row flex-norwap justify-space-between job-line"
+        class="d-flex flex-row flex-norwap justify-space-between"
       >
+        <div
+          v-if="jobLine.length === 0"
+          class="d-flex align-center justify-center text-h4 text-medium-emphasis text-center sim-title"
+          >Ragnarok online Skill Simulator</div
+        >
         <div
           v-for="(job, jobInd) in jobLine"
           :key="'job' + jobInd"
@@ -118,8 +105,10 @@
         </div>
       </div>
     </div>
-    <v-card-title class="mt-2 for-sm">4-1</v-card-title>
-    <div class="d-flex flex-row flex-wrap justify-center for-sm">
+  </div>
+  <div class="d-flex flex-wrap flex-column pa-3 ma-3 jobs-wrapper for-sm">
+    <v-card-title>4-1</v-card-title>
+    <div class="d-flex flex-row flex-wrap justify-center">
       <a
         v-for="(job, ind) in forOne"
         :key="'job' + ind"
@@ -135,8 +124,8 @@
         {{ job.displayName }}
       </a>
     </div>
-    <v-card-title class="mt-2 for-sm">4-2</v-card-title>
-    <div class="d-flex flex-row flex-wrap justify-center for-sm">
+    <v-card-title>4-2</v-card-title>
+    <div class="d-flex flex-row flex-wrap justify-center">
       <a
         v-for="(job, ind) in forTwo"
         :key="'job' + ind"
@@ -152,8 +141,8 @@
         {{ job.displayName }}
       </a>
     </div>
-    <v-card-title class="mt-2 for-sm">Others</v-card-title>
-    <div class="d-flex flex-row flex-wrap justify-center for-sm">
+    <v-card-title>Others</v-card-title>
+    <div class="d-flex flex-row flex-wrap justify-center">
       <a
         v-for="(job, ind) in other"
         :key="'job' + ind"
@@ -169,35 +158,46 @@
         {{ job.displayName }}
       </a>
     </div>
-    <g-g-copy class="pa-5" />
   </div>
+  <g-g-copy class="pa-5" />
 </template>
 
 <style lang="scss" scoped>
-  @media screen and (max-width: 849.99px) {
-    .for-sm {
-      display: initial;
-    }
-    .for-lg {
-      display: none !important;
-    }
+  .for-lg {
+    display: none !important;
+  }
+  .jobs-wrapper {
+    border: 10px solid #78c79f;
+    border-image: linear-gradient(to right bottom, #78c79f 0%, #f4b2df 100%);
+    border-image-slice: 1;
   }
   @media screen and (min-width: 850px) {
     .for-sm {
       display: none !important;
     }
     .for-lg {
-      display: initial;
+      display: initial !important;
+    }
+    .jobs-wrapper {
+      border: 20px solid #78c79f;
+      border-image: linear-gradient(to right bottom, #78c79f 0%, #f4b2df 100%);
+      border-image-slice: 1;
     }
   }
-  .job-line {
-    margin-left: 10px;
-    min-height: 128px;
+  @media screen and (min-width: 850px) {
+    .for-sm {
+      display: none !important;
+    }
+  }
+  .sim-title {
+    width: 100%;
+    font-family: YuGothic, 'Yu Gothic', sans-serif;
   }
   .job-name {
     text-decoration: none;
     color: #333;
     position: relative;
+    margin: 0 4px;
     &::before {
       position: absolute;
       top: 0;

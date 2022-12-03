@@ -1,6 +1,25 @@
 <script setup lang="ts">
   import { Ref } from 'vue'
   import { useDetailDrawer } from '~~/composables/skill'
+  const route = useRoute()
+  useHead({
+    title: `${route.meta.jobName}スキルシミュレータ | やっぱりROが好き！`,
+    meta: [
+      {
+        name: 'description',
+        content: `${route.meta.jobName}の今風リッチスキルシミュレータ`,
+      },
+      {
+        name: 'og:title',
+        content: `${route.meta.jobName}スキルシミュレータ | やっぱりROが好き！`,
+      },
+      {
+        name: 'og:description',
+        content: `${route.meta.jobName}の今風リッチスキルシミュレータ`,
+      },
+      { name: 'og:image', content: `/skill/ogp/${route.meta.code}.png` },
+    ],
+  })
   interface Modal {
     visible: boolean
     head: string
@@ -77,7 +96,6 @@
       ],
     },
   ])
-  const route = useRoute()
   function generateUrl() {
     modal.value.head = 'URLを出力しました。'
     modal.value.body =
@@ -160,14 +178,22 @@
           </v-card-actions>
         </v-card>
       </v-dialog>
-      <v-btn icon @click.stop="rightDrawer = !rightDrawer">
+      <v-btn
+        v-if="1 < route.path.length"
+        icon
+        @click.stop="rightDrawer = !rightDrawer"
+      >
         <v-icon>mdi-menu</v-icon>
       </v-btn>
     </v-app-bar>
     <v-main>
       <slot />
     </v-main>
-    <v-navigation-drawer v-model="rightDrawer" location="right">
+    <v-navigation-drawer
+      v-if="1 < route.path.length"
+      v-model="rightDrawer"
+      location="right"
+    >
       <div class="d-flex flex-no-wrap justify-space-between">
         <div>
           <div class="py-2 px-4">

@@ -13,7 +13,6 @@ export type JobTypeName =
   | 'summoner'
 
 export interface JobTree {
-  code: string // for pathName
   name: string
   jobCodes: JobCode[][]
 }

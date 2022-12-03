@@ -2,10 +2,11 @@
   import { JobTree } from '~~/models/skill'
   definePageMeta({
     layout: 'skill',
+    code: 'troubadour',
+    jobName: 'トラバドゥール',
   })
 
   const jobTree: JobTree = {
-    code: 'troubadour',
     name: 'トラバドゥール',
     jobCodes: [
       ['JT_ARCHER'],
@@ -20,13 +21,5 @@
 </script>
 
 <template>
-  <Html lang="ja">
-    <Head>
-      <Title>{{
-        jobTree.name + 'スキルシミュレータ | やっぱりROが好き！'
-      }}</Title>
-      <Meta name="description" :content="`${jobTree.name}スキルシミュレータ`" />
-    </Head>
-  </Html>
   <div> <skill-tree :all-job-codes="jobTree.jobCodes"></skill-tree></div>
 </template>
