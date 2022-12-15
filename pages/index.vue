@@ -8,6 +8,7 @@
   interface JobCard {
     name: string
     displayName: string
+    solo?: boolean
     compact?: boolean
   }
 
@@ -29,8 +30,8 @@
     ],
     [],
     [
-      { name: 'troubadour', displayName: 'Troubadour' },
-      { name: 'trouvere', displayName: 'Trouvere' },
+      { name: 'troubadour', displayName: 'Troubadour', solo: true },
+      { name: 'trouvere', displayName: 'Trouvere', solo: true },
       { name: 'inquisitor', displayName: 'Inquisitor' },
       { name: 'biolo', displayName: 'Biolo' },
       { name: 'abysschaser', displayName: 'Abyss Chaser' },
@@ -52,8 +53,8 @@
         compact: true,
       },
       { name: 'rebel', displayName: 'Rebellion', compact: true },
-      { name: 'kagerou', displayName: 'Kagerou', compact: true },
-      { name: 'oboro', displayName: 'Oboro', compact: true },
+      { name: 'kagerou', displayName: 'Kagerou', solo: true, compact: true },
+      { name: 'oboro', displayName: 'Oboro', solo: true, compact: true },
       {
         name: 'summoner',
         displayName: 'Summoner',
@@ -90,15 +91,23 @@
         >
           <div class="line_anime">
             <a :href="job.name">
-              <div class="hover_circle">
+              <div
+                class="hover_circle d-flex flex-nowrap align-center justify-center"
+              >
                 <div class="hover-name"
                   ><span class="hover-text">{{ job.displayName }}</span></div
                 >
                 <img
-                  class="ma-3"
-                  style="user-select: none"
-                  :src="`job/${job.name}.png`"
+                  v-if="!job.solo"
+                  class="male"
+                  :src="`job/${job.name}-m.png`"
                 />
+                <!-- <img
+                  v-if="!job.solo"
+                  class="female"
+                  :src="`job/${job.name}-f.png`"
+                /> -->
+                <img v-else class="solo" :src="`job/${job.name}.png`" />
               </div>
             </a>
           </div>
@@ -113,13 +122,12 @@
         v-for="(job, ind) in forOne"
         :key="'job' + ind"
         class="d-flex flex-column align-center justify-center job-name"
-        :class="{ compact: job.compact }"
         :href="job.name"
       >
         <img
           class="ma-3"
           style="user-select: none"
-          :src="`job/${job.name}.png`"
+          :src="`job/${job.name}${job.solo ? '' : '-f'}.png`"
         />
         {{ job.displayName }}
       </a>
@@ -130,13 +138,12 @@
         v-for="(job, ind) in forTwo"
         :key="'job' + ind"
         class="d-flex flex-column align-center justify-center job-name"
-        :class="{ compact: job.compact }"
         :href="job.name"
       >
         <img
           class="ma-3"
           style="user-select: none"
-          :src="`job/${job.name}.png`"
+          :src="`job/${job.name}${job.solo ? '' : '-f'}.png`"
         />
         {{ job.displayName }}
       </a>
@@ -147,13 +154,12 @@
         v-for="(job, ind) in other"
         :key="'job' + ind"
         class="d-flex flex-column align-center justify-center job-name"
-        :class="{ compact: job.compact }"
         :href="job.name"
       >
         <img
           class="ma-3"
           style="user-select: none"
-          :src="`job/${job.name}.png`"
+          :src="`job/${job.name}${job.solo ? '' : '-f'}.png`"
         />
         {{ job.displayName }}
       </a>
@@ -407,5 +413,14 @@
   }
   .hover-text {
     font-size: 13px;
+  }
+  .solo {
+    user-select: none;
+  }
+  .male {
+    user-select: none;
+  }
+  .female {
+    user-select: none;
   }
 </style>

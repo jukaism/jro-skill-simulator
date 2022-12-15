@@ -7,7 +7,7 @@
     j: string | null
     p: string
   }
-  const saves = useCookie<Save[]>('skillSave')
+  const saves = useCookie<Save[]>('skillSave', { maxAge: 60 * 60 * 24 * 365 })
   saves.value = saves.value || [
     { s: 1, t: '1: No save', j: null, p: '' },
     { s: 2, t: '2: No save', j: null, p: '' },

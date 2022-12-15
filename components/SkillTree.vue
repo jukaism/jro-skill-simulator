@@ -135,6 +135,7 @@
     default: () => {
       return { skillDesc: true, badgeDesc: true }
     },
+    maxAge: 60 * 60 * 24 * 365,
   })
   const skillDesc: Ref<boolean> = ref(skillConfig.value?.skillDesc || true)
   const badgeDesc: Ref<boolean> = ref(skillConfig.value?.badgeDesc || true)
@@ -295,6 +296,7 @@
   const relations = useSkillRelations()
   const cachedSearchItems = useCookie<ItemIdAndName[]>(
     'searchItems' + jobCodes.value[jobCodes.value.length - 1],
+    { maxAge: 60 * 60 * 24 * 365 },
   )
   const mdQuery = window.matchMedia('(min-width: 640px)')
   const lgQuery = window.matchMedia('(min-width: 850px)')
@@ -852,12 +854,7 @@
             >
               <div style="user-select: none">
                 {{ itemWithReq.ir.itemName.charAt(0) }}
-                <v-tooltip
-                  v-if="badgeDesc"
-                  activator="parent"
-                  class="tooltip"
-                  locaion="bottom"
-                >
+                <v-tooltip v-if="badgeDesc" activator="parent" class="tooltip">
                   <div style="color: black">
                     <div v-for="(html, ind) in itemWithReq.htmls" :key="ind">
                       <span v-html="html"></span>
@@ -880,11 +877,7 @@
               >
                 <div class="ma-1 skill-card">
                   {{ skill.skill.name }}
-                  <v-tooltip
-                    v-if="skillDesc"
-                    activator="parent"
-                    class="tooltip"
-                    location="bottom"
+                  <v-tooltip v-if="skillDesc" activator="parent" class="tooltip"
                     ><span
                       style="color: black"
                       v-html="skill.skill.description"
@@ -1022,7 +1015,6 @@
     }
   }
   .tooltip:deep(.v-overlay__content) {
-    max-width: min(80%, 640px) !important;
     background: #f9fbe7 !important;
     font-size: 11px !important;
   }

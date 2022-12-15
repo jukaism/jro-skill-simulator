@@ -109,13 +109,20 @@ export const fetchJob = async ({
               desc = desc.replace(str, '')
             }
           })
+          const spAmounts = Number(skiRes.sp_amount)
+          if (
+            0 < spAmounts ||
+            0 < skiRes.sp_amount?.split(',').filter((sp) => sp !== '0').length
+          ) {
+            desc += `<hr><div style="text-align: center; color: blue; margin: 5px;">消費SP: ${skiRes.sp_amount}</div>`
+          }
           let ap: 'AP+' | 'AP-' | undefined = undefined
           const apAmounts = Number(skiRes.ap_amount)
           if (desc.includes('>AP回復量')) {
             ap = 'AP+'
           }
           if (0 < apAmounts || 0 < skiRes.ap_amount?.split(',').length) {
-            desc += `<hr><div style="text-align: center; color: tomato; margin: 5px;">消費AP: ${skiRes.ap_amount}</div>`
+            desc += `<div style="text-align: center; color: tomato; margin: 5px;">消費AP: ${skiRes.ap_amount}</div>`
             ap = 'AP-'
           }
           skills.push({

@@ -34,7 +34,14 @@ export default defineNuxtConfig({
           property: 'og:description',
           content: `ROの今風リッチスキルシミュレータ`,
         },
-        { property: 'og:image', content: `/skill/ogp/skill.png` },
+        {
+          property: 'og:image',
+          content: `https://yapparo.net//skill/ogp/skill.png`,
+        },
+        {
+          name: 'twitter:card',
+          content: 'summary_large_image',
+        },
       ],
       link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.png' }],
     },

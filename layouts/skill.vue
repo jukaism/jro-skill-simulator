@@ -17,7 +17,6 @@
         name: 'og:description',
         content: `${route.meta.jobName}の今風リッチスキルシミュレータ`,
       },
-      { name: 'og:image', content: `/skill/ogp/${route.meta.code}.png` },
     ],
   })
   interface Modal {
