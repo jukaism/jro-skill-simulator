@@ -2,17 +2,17 @@
   import { JobTree } from '~~/models/skill'
   definePageMeta({
     layout: 'skill',
-    code: 'troubadour',
-    jobName: 'トルバドゥール',
+    code: 'skyemperor',
+    jobName: '天帝',
   })
 
   const jobTree: JobTree = {
-    name: 'トルバドゥール',
+    name: '天帝',
     jobCodes: [
-      ['JT_ARCHER'],
-      ['JT_BARD_H', 'JT_BARD'],
-      ['JT_MINSTREL'],
-      ['JT_TROUBADOUR'],
+      ['JT_TAEKWON'],
+      ['JT_STAR'],
+      ['JT_STAR_EMPEROR'],
+      ['JT_SKY_EMPEROR'],
     ],
   }
 

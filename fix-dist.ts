@@ -18,7 +18,7 @@ const jobName: any = {
   staremperor: '星帝',
   summoner: 'サモナー',
   supernovice: 'スーパーノービス',
-  troubadour: 'トラバドゥール',
+  troubadour: 'トルバドゥール',
   trouvere: 'トルヴェール',
   windhawk: 'ウィンドホーク',
   RO: '',

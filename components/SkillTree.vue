@@ -99,10 +99,17 @@
     | 'Rebellion'
     | 'Super Novice'
     | 'Super Novice 2'
+    | 'Sky Emperor'
+    | 'Soul Ascetic'
+    | 'Night Watch'
+    | 'Hyper Novice'
+    | 'Spirit Handler'
+    | 'Shiranui'
+    | 'Shinkiro'
 
   interface JobType {
     name: JobTypeName
-    lv: 40 | 50 | 60 | 70 | 99
+    lv: 45 | 50 | 60 | 70 | 99
   }
 
   interface JobInfo {
@@ -153,7 +160,7 @@
     { name: '2nd', lv: 70 },
     { name: '2nd_native', lv: 50 },
     { name: '3rd', lv: 70 },
-    { name: '4th', lv: 40 },
+    { name: '4th', lv: 50 },
     { name: '1st_sp', lv: 70 },
     { name: '2nd_taekwon', lv: 50 },
     { name: '1st_sp_novice', lv: 99 },
@@ -233,6 +240,13 @@
     { code: 'JT_REBELLION', name: 'Rebellion', type: '2nd' },
     { code: 'JT_SUPERNOVICE', name: 'Super Novice', type: '1st_sp_novice' },
     { code: 'JT_SUPERNOVICE2', name: 'Super Novice 2', type: '2nd' },
+    { code: 'JT_SKY_EMPEROR', name: 'Sky Emperor', type: '4th' },
+    { code: 'JT_SOUL_ASCETIC', name: 'Soul Ascetic', type: '4th' },
+    { code: 'JT_NIGHT_WATCH', name: 'Night Watch', type: '4th' },
+    { code: 'JT_HYPER_NOVICE', name: 'Hyper Novice', type: '4th' },
+    { code: 'JT_SPIRIT_HANDLER', name: 'Spirit Handler', type: '4th' },
+    { code: 'JT_SHIRANUI', name: 'Shiranui', type: '4th' },
+    { code: 'JT_SHINKIRO', name: 'Shinkiro', type: '4th' },
   ]
 
   const search: Ref<string> = ref('')
@@ -675,6 +689,11 @@
 <template>
   <v-container>
     <div class="d-flex flex-column align-center">
+      <div class="text-caption">
+        2024/05/03
+        シールドプレスの習得条件の槍修練Lv1が実際には必要なかった問題を修正
+        <br />ゲーム内説明文にもそう書いてありましたが、4/23付けのパッチで修正され、「性能に変更はありません。」とのことです。
+      </div>
       <v-col class="skill-header d-flex flex-column align-center">
         <skill-save></skill-save>
       </v-col>
@@ -714,7 +733,7 @@
             <v-avatar>
               <v-img
                 :src="
-                  'https://rotool.gungho.jp/icon/' +
+                  'https://rotool.gungho.jp/images/item/' +
                   item.searchItem.itemId +
                   '.png'
                 "
@@ -752,37 +771,37 @@
           </v-btn>
         </v-card>
       </div>
-      <div class="d-flex flex-row flex-wrap">
-        <div class="radio-group d-flex flex-row justify-center align-center">
-          <v-radio-group
-            v-model="skillDesc"
-            direction="horizontal"
-            label="スキル説明"
-          >
-            <v-radio label="あり" color="secondary" :value="true"></v-radio>
-            <v-radio label="なし" color="secondary" :value="false"></v-radio>
-          </v-radio-group>
-        </div>
-        <div class="radio-group d-flex flex-row justify-center align-center">
-          <v-radio-group
-            v-model="badgeDesc"
-            direction="horizontal"
-            label="バッジ説明"
-          >
-            <v-radio label="あり" color="secondary" :value="true"></v-radio>
-            <v-radio label="なし" color="secondary" :value="false"></v-radio>
-          </v-radio-group>
-        </div>
-        <div class="radio-group d-flex flex-row justify-center align-center">
-          <v-radio-group v-model="baby" direction="horizontal" label="転生">
-            <v-radio label="あり" color="secondary" :value="false"></v-radio>
-            <v-radio
-              label="なし（養子）"
-              color="secondary"
-              :value="true"
-            ></v-radio>
-          </v-radio-group>
-        </div>
+      <div class="d-flex justify-space-between flex-wrap">
+        <v-radio-group
+          v-model="skillDesc"
+          direction="horizontal"
+          label="スキル説明"
+        >
+          <v-radio label="あり" color="secondary" :value="true"></v-radio>
+          <v-radio label="なし" color="secondary" :value="false"></v-radio>
+        </v-radio-group>
+        <v-radio-group
+          v-model="badgeDesc"
+          class="ml-5"
+          direction="horizontal"
+          label="バッジ説明"
+        >
+          <v-radio label="あり" color="secondary" :value="true"></v-radio>
+          <v-radio label="なし" color="secondary" :value="false"></v-radio>
+        </v-radio-group>
+        <v-radio-group
+          v-model="baby"
+          class="ml-5"
+          direction="horizontal"
+          label="転生"
+        >
+          <v-radio label="あり" color="secondary" :value="false"></v-radio>
+          <v-radio
+            label="なし（養子）"
+            color="secondary"
+            :value="true"
+          ></v-radio>
+        </v-radio-group>
       </div>
       <div class="d-flex flex-no-wrap justify-between align-center">
         <v-btn
@@ -937,12 +956,9 @@
   /></v-container>
 </template>
 <style lang="scss" scoped>
-  @media screen and (max-width: 799.99px) {
-    .skill-header:deep(.skill-save) {
-      display: initial;
-      justify-content: space-between;
-      width: 100%;
-    }
+  .skill-header:deep(.skill-save) {
+    justify-content: space-between;
+    width: 100%;
   }
   @media screen and (min-width: 800px) {
     .skill-header:deep(.skill-save) {
@@ -961,13 +977,11 @@
     flex-wrap: wrap;
     flex-direction: row;
   }
-  @media screen and (max-width: 639.99px) {
-    .svg-container {
-      width: 350px;
-    }
-    .tree-container {
-      width: 350px;
-    }
+  .svg-container {
+    width: 350px;
+  }
+  .tree-container {
+    width: 350px;
   }
   @media screen and (min-width: 640px) and (max-width: 849.99px) {
     .svg-container {

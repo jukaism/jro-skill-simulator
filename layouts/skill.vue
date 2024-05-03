@@ -85,13 +85,13 @@
       alticon: 'mdi-chevron-down',
       text: 'Others',
       children: [
-        { text: 'Star Emperor', to: '/staremperor' },
-        { text: 'Soul Reaper', to: '/soulreaper' },
-        { text: 'Super Novice', to: '/supernovice' },
-        { text: 'Kagerou', to: '/kagerou' },
-        { text: 'Oboro', to: '/oboro' },
-        { text: 'Rebellion', to: '/rebel' },
-        { text: 'Summoner', to: '/summoner' },
+        { text: 'Sky Emperor', to: '/skyemperor' },
+        { text: 'Soul Ascetic', to: '/soulascetic' },
+        { text: 'Hyper Novice', to: '/hypernovice' },
+        { text: 'Shinkiro', to: '/shinkiro' },
+        { text: 'Shiranui', to: '/shiranui' },
+        { text: 'Night Watch', to: '/nightwatch' },
+        { text: 'Spirit Handler', to: '/spirithandler' },
       ],
     },
   ])
@@ -199,7 +199,9 @@
             <v-img
               v-if="itemDetail"
               :src="
-                'https://rotool.gungho.jp/icon/' + itemDetail.itemId + '.png'
+                'https://rotool.gungho.jp/images/item/' +
+                itemDetail.itemId +
+                '.png'
               "
               :max-width="75"
               :max-height="100"
