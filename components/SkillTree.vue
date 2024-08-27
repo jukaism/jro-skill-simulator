@@ -109,7 +109,7 @@
 
   interface JobType {
     name: JobTypeName
-    lv: 45 | 50 | 60 | 70 | 99
+    lv: 45 | 50 | 55 | 60 | 70 | 99
   }
 
   interface JobInfo {
@@ -160,7 +160,7 @@
     { name: '2nd', lv: 70 },
     { name: '2nd_native', lv: 50 },
     { name: '3rd', lv: 70 },
-    { name: '4th', lv: 50 },
+    { name: '4th', lv: 55 },
     { name: '1st_sp', lv: 70 },
     { name: '2nd_taekwon', lv: 50 },
     { name: '1st_sp_novice', lv: 99 },

@@ -42,5 +42,15 @@
     "vuetify": "^3.1.4"
   },
   "lint-staged": {
+    "**/*.{js,ts}": [
+      "eslint"
+    ],
+    "**/*.{css,scss}": [
+      "stylelint"
+    ],
+    "**/*.vue": [
+      "eslint",
+      "stylelint"
+    ]
   }
 }
