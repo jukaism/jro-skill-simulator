@@ -14,10 +14,13 @@
       ['JT_GUILLOTINE_CROSS'],
       ['JT_SHADOW_CROSS'],
     ],
+    baseCode: 'ASSASSIN',
   }
 
   const jobName = useDisplayJobName()
   jobName.value = jobTree.name
+  const officialJobBaseName = useOfficialJobBaseName()
+  officialJobBaseName.value = jobTree.baseCode
 </script>
 
 <template>

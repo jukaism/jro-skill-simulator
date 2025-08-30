@@ -160,7 +160,7 @@
     { name: '2nd', lv: 70 },
     { name: '2nd_native', lv: 50 },
     { name: '3rd', lv: 70 },
-    { name: '4th', lv: 55 },
+    { name: '4th', lv: 60 },
     { name: '1st_sp', lv: 70 },
     { name: '2nd_taekwon', lv: 50 },
     { name: '1st_sp_novice', lv: 99 },
@@ -332,10 +332,10 @@
     itemsWithRequires.value = []
     fetchJob({
       jobCodes: jobCodes.value.flat(),
-      params: typeof route.query.s === 'string' ? route.query.s : '',
+      params: route.query,
       callback: decorateRelation,
     })
-    baby.value = route.query.t === 'none'
+    baby.value = route.query.reincarnation === 'true'
     cachedSearchItems.value?.reverse().forEach((item: ItemIdAndName) => {
       const searchItem: SearchItem = {
         itemId: Number(item.id),
@@ -646,8 +646,10 @@
       }
     })
     skills.value.forEach((skill) => {
-      const jobCode: JobCode | undefined = trees.value.find((tree) =>
-        tree.skillCodes.includes(skill.code),
+      const jobCode: JobCode | undefined = trees.value.find(
+        (tree) =>
+          jobCodes.value.find((codes) => codes.includes(tree.jobCode)) &&
+          tree.skillCodes.includes(skill.code),
       )?.jobCode
       if (jobCode) {
         const index = codeLvs.findIndex((cl) => cl.codes.includes(jobCode))
@@ -690,9 +692,9 @@
   <v-container>
     <div class="d-flex flex-column align-center">
       <div class="text-caption">
-        2024/05/03
-        シールドプレスの習得条件の槍修練Lv1が実際には必要なかった問題を修正
-        <br />ゲーム内説明文にもそう書いてありましたが、4/23付けのパッチで修正され、「性能に変更はありません。」とのことです。
+        2025/8/30 上限解放に伴うスキル追加に対応
+        <br />メモ空欄で上書きSAVE時、セーブ名を変更しないように修正
+        <br />セーブ形式を公式と同じに変更し、公式転送ボタン（右上）を追加。旧セーブは互換性なくなりましたのでご了承ください。
       </div>
       <v-col class="skill-header d-flex flex-column align-center">
         <skill-save></skill-save>

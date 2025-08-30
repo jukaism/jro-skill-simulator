@@ -103,7 +103,7 @@
       location.host +
       '/skill' +
       route.path +
-      '?s=' +
+      '?' +
       getParams()
     modal.value.visible = true
   }
@@ -121,6 +121,12 @@
     (): string => itemDetail.value?.itemName || '未選択',
   )
   const itemHtml = computed((): string => itemDetail.value?.description || '')
+  function goOfficialUrl() {
+    const base = 'https://rotool.gungho.jp/character_skill_tree/'
+    const jobName = useOfficialJobBaseName()
+    const params = getParams()
+    window.open(`${base}${jobName.value}?${params}`, '_blank')
+  }
 </script>
 
 <template>
@@ -154,6 +160,16 @@
       <v-toolbar-title class="job-name" :text="jobName" />
       <skill-save></skill-save>
       <v-spacer />
+
+      <v-btn
+        v-if="1 < route.path.length"
+        class="mr-4"
+        color="primary"
+        small
+        @click.stop="goOfficialUrl"
+      >
+        公式転送
+      </v-btn>
       <v-btn
         v-if="1 < route.path.length"
         class="mr-4"

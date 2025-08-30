@@ -14,10 +14,13 @@
       ['JT_RANGER'],
       ['JT_WINDHAWK'],
     ],
+    baseCode: 'HUNTER',
   }
 
   const jobName = useDisplayJobName()
   jobName.value = jobTree.name
+  const officialJobBaseName = useOfficialJobBaseName()
+  officialJobBaseName.value = jobTree.baseCode
 </script>
 
 <template>

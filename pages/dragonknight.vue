@@ -14,10 +14,13 @@
       ['JT_RUNE_KNIGHT'],
       ['JT_DRAGON_KNIGHT'],
     ],
+    baseCode: 'KNIGHT',
   }
 
   const jobName = useDisplayJobName()
   jobName.value = jobTree.name
+  const officialJobBaseName = useOfficialJobBaseName()
+  officialJobBaseName.value = jobTree.baseCode
 </script>
 
 <template>

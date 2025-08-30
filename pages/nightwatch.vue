@@ -9,10 +9,13 @@
   const jobTree: JobTree = {
     name: 'ナイトウォッチ',
     jobCodes: [['JT_GUNSLINGER'], ['JT_REBELLION'], ['JT_NIGHT_WATCH']],
+    baseCode: 'GUNSLINGER',
   }
 
   const jobName = useDisplayJobName()
   jobName.value = jobTree.name
+  const officialJobBaseName = useOfficialJobBaseName()
+  officialJobBaseName.value = jobTree.baseCode
 </script>
 
 <template>

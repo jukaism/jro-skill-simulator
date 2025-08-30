@@ -14,10 +14,13 @@
       ['JT_ROYAL_GUARD'],
       ['JT_IMPERIAL_GUARD'],
     ],
+    baseCode: 'CRUSADER',
   }
 
   const jobName = useDisplayJobName()
   jobName.value = jobTree.name
+  const officialJobBaseName = useOfficialJobBaseName()
+  officialJobBaseName.value = jobTree.baseCode
 </script>
 
 <template>

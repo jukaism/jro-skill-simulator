@@ -14,10 +14,13 @@
       ['JT_WARLOCK'],
       ['JT_ARCH_MAGE'],
     ],
+    baseCode: 'WIZARD',
   }
 
   const jobName = useDisplayJobName()
   jobName.value = jobTree.name
+  const officialJobBaseName = useOfficialJobBaseName()
+  officialJobBaseName.value = jobTree.baseCode
 </script>
 
 <template>

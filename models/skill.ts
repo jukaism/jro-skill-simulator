@@ -15,6 +15,7 @@ export type JobTypeName =
 export interface JobTree {
   name: string
   jobCodes: JobCode[][]
+  baseCode: string
 }
 
 export interface SkillTree {

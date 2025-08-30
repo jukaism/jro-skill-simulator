@@ -14,10 +14,13 @@
       ['JT_STAR_EMPEROR'],
       ['JT_SKY_EMPEROR'],
     ],
+    baseCode: 'STAR',
   }
 
   const jobName = useDisplayJobName()
   jobName.value = jobTree.name
+  const officialJobBaseName = useOfficialJobBaseName()
+  officialJobBaseName.value = jobTree.baseCode
 </script>
 
 <template>

@@ -7,7 +7,9 @@
     j: string | null
     p: string
   }
-  const saves = useCookie<Save[]>('skillSave', { maxAge: 60 * 60 * 24 * 365 })
+  const saves = useCookie<Save[]>('skillSaveCompatible', {
+    maxAge: 60 * 60 * 24 * 365,
+  })
   saves.value = saves.value || [
     { s: 1, t: '1: No save', j: null, p: '' },
     { s: 2, t: '2: No save', j: null, p: '' },
@@ -37,7 +39,7 @@
     if (saves.value?.[selectedSave.value.s - 1]) {
       const newSave: Save = {
         s: selectedSave.value.s,
-        t: memo.value || '名称未設定',
+        t: memo.value || selectedSave.value.t || '名称未設定',
         j: route.path,
         p: getParams(),
       }
@@ -52,9 +54,11 @@
       return
     }
     if (route.path === selectedSave.value.j) {
-      setParams(selectedSave.value.p)
+      const urlSearchParams = new URLSearchParams(selectedSave.value.p)
+      const params = Object.fromEntries(urlSearchParams.entries())
+      setParams(params)
     } else {
-      navigateTo(selectedSave.value.j + '?s=' + selectedSave.value.p)
+      navigateTo(selectedSave.value.j + '?' + selectedSave.value.p)
     }
   }
 </script>

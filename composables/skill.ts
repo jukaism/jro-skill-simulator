@@ -24,6 +24,8 @@ export const useDetailDrawer = () =>
   useState<boolean>('rightDrawer', () => false)
 export const useDisplayJobName = () =>
   useState<string>('displayJobName', () => '')
+export const useOfficialJobBaseName = () =>
+  useState<string>('officialJobBaseName', () => '')
 export const useTrees = () => useState<SkillTree[]>('trees', () => [])
 export const useSkillGroups = () =>
   useState<SkillGroup[]>('skillGroups', () => [])
@@ -69,7 +71,7 @@ export const fetchJob = async ({
   callback,
 }: {
   jobCodes: JobCode[]
-  params: string
+  params: Record<string, string | null>
   callback: () => void
 }) => {
   const { data: res } = await useFetch<JobSkillResponse>(
@@ -189,20 +191,43 @@ export const fetchJob = async ({
 
 // Skill sets <=> URLParameters
 export const getParams = (): string => {
-  let skills = ''
+  const uniques: Skill[] = []
   skillsRef.value
-    .filter((sk: Skill) => sk.id >= 0)
+    .filter((sk: Skill) => sk.id >= 0 && sk.lv > 0)
     .forEach((sk: Skill) => {
-      skills += String.fromCharCode(sk.lv * 2 + 97)
+      if (
+        babyRef.value &&
+        !treesRef.value.find(
+          (tree) =>
+            !tree.jobCode.endsWith('_H') && tree.skillCodes.includes(sk.code),
+        )
+      ) {
+        return
+      }
+      const exists = uniques.findIndex((u: Skill) => u.code === sk.code)
+      if (exists >= 0) {
+        uniques[exists].lv = Math.max(uniques[exists].lv, sk.lv)
+      } else {
+        uniques.push(sk)
+      }
     })
-  if (babyRef.value) {
-    skills += '&t=none'
-  }
-  return skills
+  return `${uniques.map((sk: Skill) => sk.code + '=' + sk.lv).join('&')}${
+    babyRef.value ? '&reincarnation=true' : ''
+  }`
 }
-export const setParams = (params: string) => {
-  params.split('').forEach((a: string, index: number) => {
-    setSkillLvByIndex({ index, level: (a.charCodeAt(0) - 97) / 2 })
+export const setParams = (params: Record<string, string | null>) => {
+  const entries = Object.entries(params).filter(
+    ([key]) => key !== 'reincarnation',
+  )
+  skillsRef.value.forEach((skill: Skill) => {
+    if (entries.findIndex(([key]) => key === skill.code) === -1) {
+      decrementSkillLv({ target: skill, level: 0 })
+    }
+  })
+  entries.forEach(([key, value]) => {
+    if (key !== 'reincarnation') {
+      setSkillLvByCode({ code: key, level: Number(value) })
+    }
   })
 }
 
@@ -264,6 +289,22 @@ export const setSkillLvByIndex = ({
   const target: Skill | undefined = skillsRef.value.filter(
     (sk: Skill) => sk.id >= 0,
   )[index]
+  if (target) {
+    incrementSkillLv({ target, level: Math.min(level, target.maxLv) })
+    decrementSkillLv({ target, level: Math.max(level, 0) })
+  }
+}
+
+export const setSkillLvByCode = ({
+  code,
+  level,
+}: {
+  code: string
+  level: number
+}) => {
+  const target: Skill | undefined = skillsRef.value.find(
+    (skill: Skill) => skill.code === code,
+  )
   if (target) {
     incrementSkillLv({ target, level: Math.min(level, target.maxLv) })
     decrementSkillLv({ target, level: Math.max(level, 0) })

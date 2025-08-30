@@ -14,10 +14,13 @@
       ['JT_SHADOW_CHASER'],
       ['JT_ABYSS_CHASER'],
     ],
+    baseCode: 'ROGUE',
   }
 
   const jobName = useDisplayJobName()
   jobName.value = jobTree.name
+  const officialJobBaseName = useOfficialJobBaseName()
+  officialJobBaseName.value = jobTree.baseCode
 </script>
 
 <template>

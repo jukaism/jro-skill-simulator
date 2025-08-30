@@ -14,10 +14,13 @@
       ['JT_SOUL_REAPER'],
       ['JT_SOUL_ASCETIC'],
     ],
+    baseCode: 'LINKER',
   }
 
   const jobName = useDisplayJobName()
   jobName.value = jobTree.name
+  const officialJobBaseName = useOfficialJobBaseName()
+  officialJobBaseName.value = jobTree.baseCode
 </script>
 
 <template>

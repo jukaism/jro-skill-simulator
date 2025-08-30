@@ -14,10 +14,13 @@
       ['JT_MINSTREL'],
       ['JT_TROUBADOUR'],
     ],
+    baseCode: 'BARD',
   }
 
   const jobName = useDisplayJobName()
   jobName.value = jobTree.name
+  const officialJobBaseName = useOfficialJobBaseName()
+  officialJobBaseName.value = jobTree.baseCode
 </script>
 
 <template>
